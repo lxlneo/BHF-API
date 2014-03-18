@@ -1,0 +1,20 @@
+/*
+  获取某个issue的素材列表
+  URL: /api/issue/[issue id]/asset
+  Method: GET
+ */
+{
+  //素材列表
+  "items": [
+    {
+      //素材编号
+      "id": 10,
+      //文件名
+      "file_name": "index.psd",
+      //文件大小
+      "file_size": 1203819,
+      //描述
+      "description": "这个就是首页的psd了"
+    }
+  ]
+}
