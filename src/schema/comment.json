@@ -1,6 +1,9 @@
 {
-  "issue_id": "",
-  "owner": "",
-  "content": "text",
-  "timestamp": "dateTime"
+  "name": "comment",
+  "fields": {
+    "issue_id": "",
+    "owner": "",
+    "content": "text",
+    "timestamp": "dateTime"
+  }
 }

@@ -1,4 +1,7 @@
 {
-  "username": "",
-  "password": ""
+  "name": "member",
+  "fields":{
+    "username": "",
+    "password": ""
+  }
 }

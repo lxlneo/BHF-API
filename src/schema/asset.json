@@ -1,6 +1,9 @@
 {
-  "file_name": "",
-  "file_type": "",
-  "file_size": "integer",
-  "description": "text"
+  "name": "asset",
+  "fields": {
+    "file_name": "",
+    "file_type": "",
+    "file_size": "integer",
+    "description": "text"
+  }
 }

@@ -1,9 +1,12 @@
 {
-  "title": "",
-  "content": "text",
-  "tag": "",
-  "owner": "",
-  "status": "",
-  "timestamp": "dateTime",
-  "project_id": "integer"
+  "name": "issue",
+  "fields":{
+    "title": "",
+    "content": "text",
+    "tag": "",
+    "owner": "",
+    "status": "",
+    "timestamp": "dateTime",
+    "project_id": "integer"
+  }
 }
