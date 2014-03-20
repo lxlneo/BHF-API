@@ -21,7 +21,7 @@ Asset = ()->
 _util.inherits(Asset, _store.BaseEntity)
 
 Asset.prototype.find = (condition, callback)->
-  Asset.super_.prototype.find.call this, condition, (err, result)->
+  Asset.super_.prototype.find.call _asset, condition, (err, result)->
     _.each result.items, (item)->
       item.url = "/assets/#{item.project_id}/#{item.file_name}"
 
@@ -30,7 +30,7 @@ Asset.prototype.find = (condition, callback)->
 Asset.prototype.readFile = (req, res, next)->
   project_id = req.params.project_id
   filename = req.params.filename
-  fullpath = _path.join _utility.rootPath, _config.assets, project_id, filename
+  fullpath = _path.join _utility.rootPath, "asset", project_id, filename
   res.sendfile fullpath
 
 #处理上传文件
@@ -62,7 +62,8 @@ Asset.prototype.uploadFile = (req, res, next)->
     _air.save relation, (err, relation_id)->
   ###
 
-module.exports = new Asset(_schema)
+_asset = new Asset(_schema)
+module.exports = _asset
 
 #保存素材
 saveAsset = (tempFile, project_id)->
