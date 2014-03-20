@@ -34,11 +34,7 @@ apiRouter = (biz, path, app)->
 
 #获取crud的默认path
 getPaths = (map)->
-  paths =
-    post: (map.paths && map.paths.post) || map.path
-    get: (map.paths && map.paths.get) || "#{map.path}/:id?"
-    put: (map.paths && map.paths.get) || "#{map.path}/:id"
-    delete: "#{map.path}/:id"
+  paths = {}
 
   pathPuffix =
     post: ""
@@ -87,7 +83,7 @@ apiRouterTo = (app, map)->
             res.json {id: new_id}
           break
         when "delete"
-          biz.remove {id: id}, (error)->
+          biz.remove data, (error)->
             res.end()
           break
 
