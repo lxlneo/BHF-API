@@ -12,8 +12,22 @@ Issue = ()->
 #继承自Store中的BaseEntity
 _util.inherits(Issue, _store.BaseEntity)
 
+#改变issue的状态
+Issue.prototype.changeStatus = (req, res, next)->
+  issue_id = req.params.id
+  status = req.body.status
 
-module.exports = new Issue(_schema)
+  data = {
+    id: issue_id,
+    status: status
+  }
+
+  #修改状态
+  Issue.super_.prototype.save.call _issue, data, (err)->
+    res.end()
+
+_issue = new Issue(_schema)
+module.exports = _issue
 
 
 ###

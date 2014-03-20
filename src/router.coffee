@@ -58,7 +58,7 @@ apiRouterTo = (app, map)->
     #如果指定的方法为false，则不处理这个method
     return if specialMethod is false
     #由业务逻辑指定的处理处理
-    return app[method](path, biz[specialMethod]) if specialMethod and biz[specialMethod]
+    return app[method](path, biz[specialMethod]) && console.log(path, specialMethod) if specialMethod and biz[specialMethod]
 
     #处理常规则的method
     app[method] path, (req, res, next)->
@@ -171,6 +171,15 @@ module.exports = (app)->
       biz: "asset_issue_relation"
       methods:
         put: false
+    ,
+      #更改issue的状态，仅能更新
+      path: "#{apiRoot}issue/status"
+      biz: "issue"
+      methods:
+        get: false,
+        delete: false,
+        post: false
+        put: "changeStatus"
   ]
 
   mapping.forEach (map)->
