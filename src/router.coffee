@@ -136,6 +136,7 @@ module.exports = (app)->
 
   apiRoot = "/api/"
   mapping = [
+      #项目
       path: "#{apiRoot}project"
       biz: "project"
     ,
@@ -153,7 +154,7 @@ module.exports = (app)->
         put: false
     ,
       #查看素材
-      path: "assets/:project_id/:file",
+      path: "/asset/:project_id/:filename",
       biz: "asset"
       methods:
         get: "readFile"
@@ -161,11 +162,19 @@ module.exports = (app)->
         post: false,
         delete: false
     ,
+      #issue
       path: "#{apiRoot}project/:project_id/issue"
       biz: "issue"
     ,
+      #针对issue的评论
       path: "#{apiRoot}issue/:issue_id/comment"
       biz: "comment"
+    ,
+      #建立或者解除asset与issue的关系
+      path: "#{apiRoot}issue/:issue_id/asset"
+      biz: "asset_issue_relation"
+      methods:
+        put: false
   ]
 
   mapping.forEach (map)->
