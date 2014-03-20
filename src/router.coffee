@@ -32,6 +32,67 @@ apiRouter = (biz, path, app)->
   #删除数据
   app.delete "#{path}/:id", (req, res, next)->
 
+#获取crud的默认path
+getPaths = (map)->
+  paths =
+    post: (map.paths && map.paths.post) || map.path
+    get: (map.paths && map.paths.get) || "#{map.path}/:id?"
+    put: (map.paths && map.paths.get) || "#{map.path}/:id"
+    delete: "#{map.path}/:id"
+
+  pathPuffix =
+    post: ""
+    get: "/:id?"
+    put: "/:id"
+    delete: "/:id"
+
+  ["post", "get", "put", "delete"].forEach (method)->
+    path = (map.paths && map.paths[method]) || "#{map.path}#{pathPuffix[method]}"
+    paths[method] = path    #"/api/#{path}"
+  paths
+
+apiRouterTo = (app, map)->
+  biz = require "./biz/#{map.biz}"
+  paths = getPaths(map)
+
+  ["get", "post", "delete", "put"].forEach (method)->
+    path = paths[method]
+    #如果在map中，有指定业务逻辑的处理方法，则交给业务逻辑处理
+    specialMethod = (map.methods || {})[method]
+    #如果指定的方法为false，则不处理这个method
+    return if specialMethod is false
+    #由业务逻辑指定的处理处理
+    return app[method](path, biz[specialMethod]) if specialMethod and biz[specialMethod]
+
+    #处理常规则的method
+    app[method] path, (req, res, next)->
+      #处理data部分
+      data = {}
+      switch method
+        when "get" then data = req.query
+        when "post", "put" then data = req.body
+
+      #将params合并
+      data = _.extend data, req.params
+
+      #根据不同的类型，交由默认的业务逻辑处理
+      switch method
+        when "get"
+          biz.find data, (err, results)->
+            res.json results
+          break
+        when "post", "put"
+          #保存数据
+          biz.save data, (err, new_id)->
+            res.json {id: new_id}
+          break
+        when "delete"
+          biz.remove {id: id}, (error)->
+            res.end()
+          break
+
+
+###
 #项目的路由
 projectRounter = (app)->
   #获取project信息
@@ -49,12 +110,17 @@ projectRounter = (app)->
   #删除数据
   app.delete "#{path}/:id", (req, res, next)->
     _project.remove
+###
 
 #响应404错误
 response404 = (req, res, next)->
+  res.statusCode = 404
+  res.end('404 Not Found')
 
 #响应403权限错误
 response403 = (req, res, next)->
+  res.statusCode = 403
+  res.end('')
 
 #权限校验
 checkAuthority = (req, res, next)->
@@ -68,13 +134,55 @@ module.exports = (app)->
 
   #校验校验权限
 
+  apiRoot = "/api/"
+  mapping = [
+      path: "#{apiRoot}project"
+      biz: "project"
+    ,
+      #素材
+      path: "#{apiRoot}project/:project_id/asset"
+      ### paths
+      paths:
+        post: "post path"
+        get: "get path"
+      ###
+      biz: "asset"
+      methods:
+        post: "uploadFile"
+        delete: false
+        put: false
+    ,
+      #查看素材
+      path: "assets/:project_id/:file",
+      biz: "asset"
+      methods:
+        get: "readFile"
+        put: false,
+        post: false,
+        delete: false
+    ,
+      path: "#{apiRoot}project/:project_id/issue"
+      biz: "issue"
+    ,
+      path: "#{apiRoot}issue/:issue_id/comment"
+      biz: "comment"
+  ]
 
+  mapping.forEach (map)->
+    apiRouterTo app, map
+
+  app.get "*", response404
+
+  #require('fs').renameSync '/Users/conis/WorkStation/BHF/src/uploads/2692-10y4zi.png', '/Users/conis/WorkStation/BHF/src/assets/2692-10y4zi.png'
+  ###
+  return
   mapping =
     "project": "project"
     "issue": "project/:project_id/issue"
     "comment": "issue/:issue_id/comment"
-    "asset": "project/:parent_id/asset"
+    "asset": "project/:project_id/asset"
 
   for key, path of mapping
     biz = require "./biz/#{key}"
     apiRouter biz, path, app
+###
