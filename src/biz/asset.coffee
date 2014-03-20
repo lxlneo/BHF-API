@@ -27,6 +27,12 @@ Asset.prototype.find = (condition, callback)->
 
     callback(err, result)
 
+Asset.prototype.readFile = (req, res, next)->
+  project_id = req.params.project_id
+  filename = req.params.filename
+  fullpath = _path.join _utility.rootPath, _config.assets, project_id, filename
+  res.sendfile fullpath
+
 #处理上传文件
 Asset.prototype.uploadFile = (req, res, next)->
   project_id = req.params.project_id
