@@ -12,4 +12,19 @@ Project = ()->
 #继承自Store中的BaseEntity
 _util.inherits(Project, _store.BaseEntity)
 
-module.exports = new Project(_schema)
+#改变issue的状态
+Project.prototype.changeStatus = (req, res, next)->
+  project_id = req.params.id
+  status = req.body.status
+
+  data = {
+    id: project_id,
+    status: status
+  }
+
+  #修改状态
+  Project.super_.prototype.save.call _project, data, (err)->
+    res.end()
+
+_project = new Project(_schema)
+module.exports = _project
