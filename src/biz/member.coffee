@@ -26,8 +26,21 @@ Member.prototype.signIn = (req, res, next)->
   password = req.body.password
   data = username: username
 
+  errMessage = "用户名或者密码错误"
   this.find data, (err, result)->
-    #检查用户是否存在
+    #没有这个用户名
+    if result.items.length == 0
+      return _common.response406 res, errMessage
+
+    #检查密码是否匹配
+    row = result.items[0]
+    if row.password isnt _common.md5 password
+      return _common.response406 res, errMessage
+
+    #写入session
+
+    #返回正确的结果
+    res.end()
 
 #用户注册
 Member.prototype.signUp = (req, res, next)->
@@ -47,6 +60,4 @@ Member.prototype.signUp = (req, res, next)->
 
 Member.prototype.signOut = (req, res, next)->
 
-
-_member = new Member(_schema)
-module.exports = _member
+module.exports = new Member(_schema)
