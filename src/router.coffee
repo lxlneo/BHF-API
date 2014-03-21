@@ -3,8 +3,9 @@
 ###
 _ = require 'underscore'
 _config = require './config.json'
+_common = require './common'
 
-
+#anonymity
 #获取crud的默认path
 getPaths = (router)->
   paths = {}
@@ -17,7 +18,7 @@ getPaths = (router)->
 
   ["post", "get", "put", "delete"].forEach (method)->
     #如果有指定paths，优先取指定method的path，如果没有取到，则取paths.all
-    #假如在paths中没有取到，则拼装path 
+    #假如在paths中没有取到，则拼装path
     path = (router.paths && (router.paths[method] || router.paths.all)) ||
       "#{_config.rootAPI}#{router.path}#{pathPuffix[method]}"
     #替换掉路径中的变量
@@ -37,14 +38,16 @@ apiRouter = (app, router)->
     return if specialMethod is false
     #由业务逻辑指定的处理处理
     if specialMethod and biz[specialMethod]
-      console.log specialMethod, path
       #console.log(path, specialMethod)
-      app[method] path, ()->
-        biz[specialMethod].apply biz, Array.prototype.slice.call(arguments)
+      app[method] path, (req, res, next)->
+        #检查权限
+        requestPermission(method, router, req, res) && biz[specialMethod].call(biz, req, res, next)
       return
 
     #处理常规则的method
     app[method] path, (req, res, next)->
+      #用户校验
+      return if not requestPermission(method, router, req, res)
       #处理data部分
       data = {}
       switch method
@@ -77,22 +80,20 @@ response404 = (req, res, next)->
   res.statusCode = 404
   res.end('404 Not Found')
 
-#响应403权限错误
-response403 = (req, res, next)->
-  res.statusCode = 403
-  res.end('')
+#权限校验，仅检查用户是否已经登录，并不考虑用户的角色
+requestPermission = (method, router, req, res)->
+  return true
+  #检查是否忽略权限检查
+  return true if  _.indexOf(router.anonymity || [], method) >= 0
 
-#权限校验
-checkAuthority = (req, res, next)->
-  #如果权限校验不通过，则执行403，否则进入下一个路由
-  next()
+  #如果没有找到session中的member_id，则跳转401，并返回undefined
+  return req.session.member_id || _common.response401(res)
 
 module.exports = (app)->
   #首页
   app.get '/', (req, res, next)->
     res.sendfile 'static/index.html'
 
-  #校验校验权限
 
   _config.routers.forEach (router)->
     apiRouter app, router
