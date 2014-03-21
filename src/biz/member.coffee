@@ -38,6 +38,9 @@ Member.prototype.signIn = (req, res, next)->
       return _common.response406 res, errMessage
 
     #写入session
+    req.session.member_id = row.id
+    req.session.username = row.username
+    req.session.email = row.email
 
     #返回正确的结果
     res.end()
@@ -58,6 +61,15 @@ Member.prototype.signUp = (req, res, next)->
     self.save data, (err, member_id)->
       res.json {id: member_id}
 
+#获取用户的信息
+Member.prototype.getMember = (req, res, next)->
+  res.json
+    username: req.session.username
+    email: req.session.email
+
 Member.prototype.signOut = (req, res, next)->
+  #删除session
+  delete req.session.member_id
+  res.end()
 
 module.exports = new Member(_schema)
