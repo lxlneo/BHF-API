@@ -7,7 +7,7 @@ _util = require 'util'
 _schema = require '../schema/asset.json'
 _air = require './asset_issue_relation'
 _fs = require 'fs'
-_utility = require '../utility'
+_commom = require '../common'
 _config = require '../config.json'
 _uuid = require 'node-uuid'
 _path = require 'path'
@@ -30,7 +30,7 @@ Asset.prototype.find = (condition, callback)->
 Asset.prototype.readFile = (req, res, next)->
   project_id = req.params.project_id
   filename = req.params.filename
-  fullpath = _path.join _utility.rootPath, "asset", project_id, filename
+  fullpath = _path.join _commom.rootPath, "asset", project_id, filename
   res.sendfile fullpath
 
 #处理上传文件
@@ -67,12 +67,12 @@ module.exports = _asset
 
 #保存素材
 saveAsset = (tempFile, project_id)->
-  target_dir = _path.join _utility.rootPath, _config.assets, project_id
+  target_dir = _path.join _commom.rootPath, _config.assets, project_id
   #不在则创建这个文件夹
   _fs.mkdirSync target_dir if not _fs.existsSync target_dir
 
   filename = _uuid.v4() + _path.extname(tempFile)
-  tmp_path = _path.join _utility.rootPath, _config.uploads, _path.basename(tempFile)
+  tmp_path = _path.join _commom.rootPath, _config.uploads, _path.basename(tempFile)
   target_path = _path.join target_dir, filename
   #target_path = _path.join _utility.rootPath, _config.uploads, filename
 
