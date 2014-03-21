@@ -53,8 +53,8 @@ BaseEntity.prototype.save = (data, callback)->
 
     this.entity()
     .insert(data)
-    .then (projectId)->
-        callback(null, projectId)
+    .then (result)->
+        callback(null, result && result.length > 0 && result[0])
   else
     this.entity()
     .where('id', '=', data.id)
