@@ -16,6 +16,8 @@ _app.configure ()->
     limit: '200mb'
     keepExtensions: true
   ));
+  _app.use(_express.cookieParser())
+  _app.use(_express.session(secret: 'hunantv.com'))
   _app.use(_express.static(__dirname + '/static'))
   _app.set 'port', 14318
 

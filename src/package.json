@@ -1,0 +1,17 @@
+{
+  "name": "BHF",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "*",
+    "coffee-script": "*",
+    "sqlite3": "",
+    "underscore": "",
+    "async": "",
+    "mocha": "",
+    "expect.js": "",
+    "knex": "",
+    "node-uuid": "",
+    "mime": "",
+    "node-markdown": ""
+  }
+}
