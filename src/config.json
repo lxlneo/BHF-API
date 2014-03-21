@@ -15,6 +15,7 @@
       "biz": "asset",
       "method": {
         "post": "uploadFile",
+        "delete": false,
         "put": false
       }
     },

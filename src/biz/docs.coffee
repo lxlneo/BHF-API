@@ -12,6 +12,7 @@ exports.document = (req, res, next)->
   res.write('<html><head>')
   res.write('<title>API文档</title>')
   #res.write('<link href="http://jasonm23.github.io/markdown-css-themes/foghorn.css" type="text/css" rel="stylesheet">')
+  res.write('<link href="/markdown-css/GitHub2.css" type="text/css" rel="stylesheet">')
   res.write('<meta http-equiv="content-type" content="text/html;charset=UTF-8" /></head>')
   res.write('<body>')
   res.write _md(content)
