@@ -15,7 +15,6 @@
       "biz": "asset",
       "method": {
         "post": "uploadFile",
-        "delete": false,
         "put": false
       }
     },
@@ -31,8 +30,7 @@
         "post": false,
         "delete": false
       }
-    },
-    {
+    },{
       "comment": "#issue",
       "path": "project/:project_id(\\d+)/issue",
       "biz": "issue"
@@ -40,7 +38,10 @@
     {
       "comment": "针对issue的评论",
       "path": "issue/:issue_id(\\d+)/comment",
-      "biz": "comment"
+      "biz": "comment",
+      "method": {
+        "put": false
+      }
     },
     {
       "comment": "#建立或者解除asset与issue的关系",
@@ -73,7 +74,6 @@
       }
     },
     {
-      "comment": "用户模块",
       "paths": {
         "all": "#{rootAPI}mine"
       },
@@ -83,6 +83,25 @@
         "put": "signIn",
         "delete": "signOut",
         "get": "getMember"
+      },
+      "anonymity": ["post", "put"],
+      "comment": {
+        "summary": "用户模块",
+        "method": {
+          "post": "用户注册",
+          "put": "用户登录",
+          "delete": "注销",
+          "get": "获取用户信息，用于判断用户是否登录"
+        }
+      }
+    },
+    {
+      "paths": {
+        "get": "/doc.html"
+      },
+      "biz": "docs",
+      "method": {
+        "get": "document"
       }
     }
   ]
