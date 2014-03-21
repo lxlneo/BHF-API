@@ -58,7 +58,11 @@ apiRouterTo = (app, map)->
     #如果指定的方法为false，则不处理这个method
     return if specialMethod is false
     #由业务逻辑指定的处理处理
-    return app[method](path, biz[specialMethod]) && console.log(path, specialMethod) if specialMethod and biz[specialMethod]
+    if specialMethod and biz[specialMethod]
+      #console.log(path, specialMethod)
+      app[method] path, ()->
+        biz[specialMethod].apply biz, Array.prototype.slice.call(arguments)
+      return
 
     #处理常规则的method
     app[method] path, (req, res, next)->
@@ -189,6 +193,15 @@ module.exports = (app)->
         delete: false,
         post: false
         put: "changeStatus"
+    ,
+      #用户登录
+      path: "#{apiRoot}signup"
+      biz: "member"
+      methods:
+        post: "signUp"
+        put: false,
+        delete: false,
+        get: false,
   ]
 
   mapping.forEach (map)->
