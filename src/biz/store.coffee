@@ -28,17 +28,21 @@ BaseEntity.prototype.find = (condition, callback)->
   for key, value of condition
     delete condition[key] if value is undefined
 
-  this.entity()
+  exec = this.entity()
   .where condition
     .select('*')
-    .then (items)->
-        result =
-          items: items
-          pagination:
-            page_index: 1,
-            page_size: 10
+  sql = exec.toString()
 
-        callback null, result
+  exec.then((items)->
+    result =
+      items: items
+      pagination:
+        page_index: 1,
+        page_size: 10
+
+    callback null, result
+  )
+  console.log sql
 
 #简单的存储
 BaseEntity.prototype.save = (data, callback)->
