@@ -2,6 +2,8 @@
   "name": "member",
   "fields":{
     "username": "",
-    "password": ""
+    "email": "",
+    "password": "",
+    "role": ""
   }
 }
