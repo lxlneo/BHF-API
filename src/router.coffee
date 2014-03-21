@@ -38,9 +38,9 @@ getPaths = (map)->
 
   pathPuffix =
     post: ""
-    get: "/:id?"
-    put: "/:id"
-    delete: "/:id"
+    get: "/:id(\\d+)?"
+    put: "/:id(\\d+)"
+    delete: "/:id(\\d+)"
 
   ["post", "get", "put", "delete"].forEach (method)->
     path = (map.paths && map.paths[method]) || "#{map.path}#{pathPuffix[method]}"
@@ -177,6 +177,15 @@ module.exports = (app)->
       biz: "issue"
       methods:
         get: false,
+        delete: false,
+        post: false
+        put: "changeStatus"
+    ,
+      #获取项目状态，及修改项目状态的路由
+      path: "#{apiRoot}project/:project_id/status"
+      biz: "project"
+      methods:
+        get: "getStatus",
         delete: false,
         post: false
         put: "changeStatus"
