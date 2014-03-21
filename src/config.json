@@ -1,5 +1,85 @@
 {
   "dbpath": "./db.sqlite3",
   "assets": "./assets",
-  "uploads": "./uploads"
+  "uploads": "./uploads",
+  "rootAPI": "/api/",
+  "routers": [
+    {
+      "comment": "项目",
+      "path": "project",
+      "biz": "project"
+    },
+    {
+      "comment": "素材",
+      "path": "project/:project_id(\\d+)/asset",
+      "biz": "asset",
+      "methods": {
+        "post": "uploadFile",
+        "delete": false,
+        "put": false
+      }
+    },
+    {
+      "comment": "#查看素材",
+      "fullPath": "/asset/:project_id(\\d+)/:filename",
+      "biz": "asset",
+      "methods": {
+        "get": "readFile",
+        "put": false,
+        "post": false,
+        "delete": false
+      }
+    },
+    {
+      "comment": "#issue",
+      "path": "project/:project_id(\\d+)/issue",
+      "biz": "issue"
+    },
+    {
+      "comment": "针对issue的评论",
+      "path": "issue/:issue_id(\\d+)/comment",
+      "biz": "comment"
+    },
+    {
+      "comment": "#建立或者解除asset与issue的关系",
+      "path": "issue/:issue_id(\\d+)/asset",
+      "biz": "asset_issue_relation",
+      "methods": {
+        "put": false
+      }
+    },
+    {
+      "comment": "#更改issue的状态，仅能更新",
+      "path": "issue/status",
+      "biz": "issue",
+      "methods": {
+        "get": false,
+        "delete": false,
+        "post": false,
+        "put": "changeStatus"
+      }
+    },
+    {
+      "comment": "#获取项目状态，及修改项目状态的路由",
+      "path": "project/:project_id(\\d+)/status",
+      "biz": "project",
+      "methods": {
+        "get": "getStatus",
+        "delete": false,
+        "post": false,
+        "put": "changeStatus"
+      }
+    },
+    {
+      "comment": "用户模块",
+      "path": "member",
+      "biz": "member",
+      "methods": {
+        "post": "signUp",
+        "put": "signIn",
+        "delete": "signOut",
+        "get": "getMember"
+      }
+    }
+  ]
 }
