@@ -15,3 +15,7 @@ exports.md5 = (text)->
 exports.response406 = (res, message)->
   res.statusCode = 406
   res.end message
+
+exports.response401 = (res)->
+  res.statusCode = 401
+  res.end()
