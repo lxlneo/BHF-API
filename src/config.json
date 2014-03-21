@@ -21,7 +21,9 @@
     },
     {
       "comment": "#查看素材",
-      "fullPath": "/asset/:project_id(\\d+)/:filename",
+      "paths":{
+        "get": "/asset/:project_id(\\d+)/:filename"
+      },
       "biz": "asset",
       "methods": {
         "get": "readFile",

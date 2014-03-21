@@ -16,11 +16,9 @@ getPaths = (router)->
     delete: "/:id(\\d+)"
 
   ["post", "get", "put", "delete"].forEach (method)->
-    path = (router.paths && router.paths[method]) || (()->
-      #如果有fullPath，则返回fullPath，否则重新组装path
-      return router.fullPath || "#{_config.rootAPI}#{router.path}#{pathPuffix[method]}"
-    )()
-    console.log path
+    #如果有指定paths，则由paths直接指定
+    path = (router.paths && router.paths[method]) ||
+      "#{_config.rootAPI}#{router.path}#{pathPuffix[method]}"
     paths[method] = path    #"/api/#{path}"
   paths
 
