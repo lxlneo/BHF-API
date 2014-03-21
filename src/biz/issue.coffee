@@ -23,7 +23,7 @@ Issue.prototype.changeStatus = (req, res, next)->
   }
 
   #修改状态
-  Issue.super_.prototype.save.call _issue, data, (err)->
+  this.save data, (err)->
     res.end()
 
 _issue = new Issue(_schema)

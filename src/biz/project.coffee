@@ -33,7 +33,7 @@ Project.prototype.changeStatus = (req, res, next)->
   }
 
   #修改状态
-  Project.super_.prototype.save.call _project, data, (err)->
+  this.save data, (err)->
     res.end()
 
 _project = new Project(_schema)

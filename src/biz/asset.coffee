@@ -21,7 +21,7 @@ Asset = ()->
 _util.inherits(Asset, _store.BaseEntity)
 
 Asset.prototype.find = (condition, callback)->
-  Asset.super_.prototype.find.call _asset, condition, (err, result)->
+  this.find condition, (err, result)->
     _.each result.items, (item)->
       item.url = "/assets/#{item.project_id}/#{item.file_name}"
 
