@@ -3,7 +3,7 @@
 2. api地址中，[]内为变量，:project_id表示占位符，如果出现?，则表示参数可选。例如：`project/:id(\\d+)?`，表示能接受`:project`与`project/19`两种方式的地址，后面的`(\\d+)`表示只接受数字形式的id
 3. 对于服务器返回的数据，首先应该进行状态码检查，例如返回401，表示需要登录；返回406，则表示用户提供的数据不合法，像登录密码不正确，删除了不属于自己的数据都会出现这样的问题 
 4. 查询分页，对于列表类的API，都支持分页查询，允许附加参数`page_size`和`page_index`两个参数来获取指定数量的数据。**目前暂不支持此功能**
-5. `src/static/test.js`包含部分测试用例，供参考
+5. `src/static/test.js`包含部分测试代码，供参考
 6. 服务器返回的如下状态码(HTTP Status Code)
 	* 200 正常情况
 	* 401 未经授权，用户需要重新登录
@@ -210,8 +210,8 @@
 ##查询
 查询某个issue下所有在使用的素材
 
-* URL：`issue/:issue_id(\\d+)/asset/(\\id)`
-* Verb: `DELETE`
+* URL：`issue/:issue_id(\\d+)/asset`
+* Verb: `GET`
 
 ##建立关系
 建立issue与asset之间的关系
@@ -303,18 +303,8 @@
 ##删除
 不支持删除
 
-##更改状态
 
-* URL：`issue/status/[issue id]`
-* Verb: `PUT`
-* Data: 
-
-		{
-			status: "进行中"
-		}
-#comment
-
-#member
+#Member
 用户相关，注册/登录/注销/获取用户资料(登录检测)
 
 ##检测登录
