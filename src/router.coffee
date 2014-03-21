@@ -137,7 +137,7 @@ module.exports = (app)->
       biz: "project"
     ,
       #素材
-      path: "#{apiRoot}project/:project_id/asset"
+      path: "#{apiRoot}project/:project_id(\\d+)/asset"
       ### paths
       paths:
         post: "post path"
@@ -150,7 +150,7 @@ module.exports = (app)->
         put: false
     ,
       #查看素材
-      path: "/asset/:project_id/:filename",
+      path: "/asset/:project_id(\\d+)/:filename",
       biz: "asset"
       methods:
         get: "readFile"
@@ -159,15 +159,15 @@ module.exports = (app)->
         delete: false
     ,
       #issue
-      path: "#{apiRoot}project/:project_id/issue"
+      path: "#{apiRoot}project/:project_id(\\d+)/issue"
       biz: "issue"
     ,
       #针对issue的评论
-      path: "#{apiRoot}issue/:issue_id/comment"
+      path: "#{apiRoot}issue/:issue_id(\\d+)/comment"
       biz: "comment"
     ,
       #建立或者解除asset与issue的关系
-      path: "#{apiRoot}issue/:issue_id/asset"
+      path: "#{apiRoot}issue/:issue_id(\\d+)/asset"
       biz: "asset_issue_relation"
       methods:
         put: false
@@ -182,7 +182,7 @@ module.exports = (app)->
         put: "changeStatus"
     ,
       #获取项目状态，及修改项目状态的路由
-      path: "#{apiRoot}project/:project_id/status"
+      path: "#{apiRoot}project/:project_id(\\d+)/status"
       biz: "project"
       methods:
         get: "getStatus",
