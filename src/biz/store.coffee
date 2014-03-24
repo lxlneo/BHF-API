@@ -37,7 +37,8 @@ createTable = (schema, callback)->
 init = ()->
   #检查数据库是否已经存在，如果存在，则退出
   path = _path.join _path.dirname(require.main.filename), _config.dbpath
-  return if _fs.existsSync path
+  console.log "数据库路径：#{path}"
+  return console.log "数据库已经已经存在" if _fs.existsSync path
 
   #建表
   dir = '../schema'
@@ -45,14 +46,17 @@ init = ()->
   allowExt = '.json'
 
   tables = _fs.readdirSync _path.join(__dirname, dir)
-  _async.eachSeries tables, (item, callback)->
+  _async.eachSeries(tables, ((item, callback)->
     #只处理指定扩展名的文件
     callback null if _path.extname item is not allowExt
     #获取schema
     schema = require "#{dir}/#{item}"
+    console.log "创建表：#{item}"
     #建表
     createTable schema, callback
-
+  ),()->
+    console.log "数据库创建完成"
+  )
 
 init()
 
