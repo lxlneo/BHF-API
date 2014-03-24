@@ -8,68 +8,11 @@ _fs = require 'fs'
 _async = require 'async'
 _ = require 'underscore'
 
-sqlite = ()->
+exports.database = ->
   _knex.initialize
     client: 'sqlite3',
     connection:
       filename: _config.dbpath
-
-########################基础的数据实体，子类继承实现
-exports.BaseEntity = BaseEntity = (schema)->
-  this.schema = schema
-  this
-
-BaseEntity.prototype.entity = ()->
-  sqlite()(this.schema.name)
-
-#简单的搜索
-BaseEntity.prototype.find = (condition, callback)->
-  #移除掉undefined的查询条件
-  for key, value of condition
-    delete condition[key] if value is undefined
-
-  exec = this.entity()
-  .where condition
-    .select('*')
-  sql = exec.toString()
-
-  exec.then((items)->
-    result =
-      items: items
-      pagination:
-        page_index: 1,
-        page_size: 10
-
-    callback null, result
-  )
-  console.log sql
-
-#简单的存储
-BaseEntity.prototype.save = (data, callback)->
-  #如果包含id，则插入
-  if not data.id
-    #检查schema中，是否包含timestamp，如果有，则替换为当前日期
-    data.timestamp = new Date() if this.schema.fields.timestamp isnt undefined
-
-    this.entity()
-    .insert(data)
-    .then (result)->
-        callback(null, result && result.length > 0 && result[0])
-  else
-    this.entity()
-    .where('id', '=', data.id)
-    .update(data)
-    .then ()->
-        callback(null)
-
-#简单的删除功能
-BaseEntity.prototype.remove = (data, callback)->
-  this.entity()
-  .where('id', data.id)
-  .del()
-  .then (total)->
-      callback null, total
-
 
 #创建字段
 createField = (table, schema)->
@@ -81,7 +24,7 @@ createField = (table, schema)->
 
 #创建一个表
 createTable = (schema, callback)->
-  db = sqlite()
+  db = exports.database()
   db.schema.hasTable(schema.name).then (exists)->
     #如果表已经存在，则退出
     return callback null if exists
