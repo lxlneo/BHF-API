@@ -82,7 +82,9 @@ response404 = (req, res, next)->
 
 #权限校验，仅检查用户是否已经登录，并不考虑用户的角色
 requestPermission = (method, router, req, res)->
-  return true
+  #非产品环境下不检查权限
+  return true if process.env.NODE_ENV isnt 'production'
+
   #检查是否忽略权限检查
   return true if  _.indexOf(router.anonymity || [], method) >= 0
 
