@@ -6,8 +6,47 @@
   <script type="text/javascript" src="jquery.js"></script>
   <script type="text/javascript" src="ajaxfileupload.js"></script>
   <script type="text/javascript" src="test.js"></script>
+</head>
+
+<body>
+<div id="wrapper">
+  <div id="content">
+    <h1>Ajax File Upload Demo</h1>
+    <p>Jquery File Upload Plugin  - upload your files with only one input field</p>
+    <p>
+      need any Web-based Information System?<br> Please <a href="http://www.phpletter.com/">Contact Us</a><br>
+      We are specialized in <br>
+    <ul>
+      <li>Website Design</li>
+      <li>Survey System Creation</li>
+      <li>E-commerce Site Development</li>
+    </ul>
+    <img id="loading" src="loading.gif" style="display:none;">
+    <form name="form" action="" method="POST" enctype="multipart/form-data">
+      <table cellpadding="0" cellspacing="0" class="tableForm">
+
+        <thead>
+        <tr>
+          <th>Please select a file and click Upload button</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><input id="fileToUpload" type="file" size="45" name="asset" class="input"></td>			</tr>
+
+        </tbody>
+        <tfoot>
+        <tr>
+          <td><button class="button" id="buttonUpload" onclick="return ajaxFileUpload();">Upload</button></td>
+        </tr>
+        </tfoot>
+
+      </table>
+    </form>
+  </div>
+
   <script type="text/javascript">
-    /*
+
     function ajaxFileUpload()
     {
       $("#loading")
@@ -49,52 +88,14 @@
       return false;
 
     }
-    */
 
+    //postProject()
     //changeStatus(21, "进行中")
+    /*
     signIn(function(){
       getMember()
     })
+    */
   </script>
-</head>
-
-<body>
-<div id="wrapper">
-  <div id="content">
-    <h1>Ajax File Upload Demo</h1>
-    <p>Jquery File Upload Plugin  - upload your files with only one input field</p>
-    <p>
-      need any Web-based Information System?<br> Please <a href="http://www.phpletter.com/">Contact Us</a><br>
-      We are specialized in <br>
-    <ul>
-      <li>Website Design</li>
-      <li>Survey System Creation</li>
-      <li>E-commerce Site Development</li>
-    </ul>
-    <img id="loading" src="loading.gif" style="display:none;">
-    <form name="form" action="" method="POST" enctype="multipart/form-data">
-      <table cellpadding="0" cellspacing="0" class="tableForm">
-
-        <thead>
-        <tr>
-          <th>Please select a file and click Upload button</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td><input id="fileToUpload" type="file" size="45" name="asset" class="input"></td>			</tr>
-
-        </tbody>
-        <tfoot>
-        <tr>
-          <td><button class="button" id="buttonUpload" onclick="return ajaxFileUpload();">Upload</button></td>
-        </tr>
-        </tfoot>
-
-      </table>
-    </form>
-  </div>
-
-
 </body>
 </html>
