@@ -12,6 +12,7 @@
     "knex": "",
     "node-uuid": "",
     "mime": "",
-    "node-markdown": ""
+    "node-markdown": "",
+    "colors": ""
   }
 }

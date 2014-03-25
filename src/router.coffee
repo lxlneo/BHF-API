@@ -4,6 +4,7 @@
 _ = require 'underscore'
 _config = require './config.json'
 _common = require './common'
+require 'colors'
 
 #anonymity
 #获取crud的默认path
@@ -39,8 +40,11 @@ apiRouter = (app, router)->
     specialMethod = (router.method || {})[method]
     #如果指定的方法为false，则不处理这个method
     return if specialMethod is false
+
     #由业务逻辑指定的处理处理
-    if specialMethod and biz[specialMethod]
+    if specialMethod
+      #如果配置中指定了方法，但在实际的逻辑中没有这个方法，则提出一个警告并退出。
+      return console.error "警告：无法进入[#{router.biz}.#{specialMethod}]方法".red if not biz[specialMethod]
       #console.log(path, specialMethod)
       app[method] path, (req, res, next)->
         #获取用户的信息

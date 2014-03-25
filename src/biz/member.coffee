@@ -62,7 +62,6 @@ class Member extends _BaseEntity
   getMember: (member, req, res, next)->
     #测试环境下，可能取消了登录限制，这里可以校验用户是否登录
     return _common.response401(res) if not member.member_id
-    console.log req.session.member_id
     res.json
       username: req.session.username
       email: req.session.email
