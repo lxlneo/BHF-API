@@ -20,11 +20,15 @@ class BaseEntity
     sql = exec.toString()
 
     exec.then((items)->
-      result =
-        items: items
-        pagination:
-          page_index: 1,
-          page_size: 10
+      #如果存在id，则表示查找单条数据
+      if condition.id
+        result = if items.length == 0 then null else items[0]
+      else
+        result =
+          items: items
+          pagination:
+            page_index: 1,
+            page_size: 10
 
       callback null, result
     )
