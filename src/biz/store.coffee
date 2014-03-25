@@ -7,12 +7,13 @@ _path = require 'path'
 _fs = require 'fs'
 _async = require 'async'
 _ = require 'underscore'
+_common = require '../common'
 
 exports.database = ->
   _knex.initialize
     client: 'sqlite3',
     connection:
-      filename: _config.dbpath
+      filename: _common.sqlitePath
 
 #创建字段
 createField = (table, schema)->
@@ -36,9 +37,8 @@ createTable = (schema, callback)->
 #建表，创建数据库
 init = ()->
   #检查数据库是否已经存在，如果存在，则退出
-  path = _path.join _path.dirname(require.main.filename), _config.dbpath
-  console.log "数据库路径：#{path}"
-  return console.log "数据库已经已经存在" if _fs.existsSync path
+  console.log "数据库路径：#{_common.sqlitePath}"
+  return console.log "数据库已经已经存在" if _fs.existsSync _common.sqlitePath
 
   #建表
   dir = '../schema'

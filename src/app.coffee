@@ -12,6 +12,10 @@ _path = require 'path'
 
 
 init = ()->
+  console.log "当前工作目录：#{_common.rootPath}"
+  console.log "数据库：#{_common.sqlitePath}"
+  console.log "素材库：#{_common.assetsDir}"
+
   if process.env.NODE_ENV is 'production'
     console.log '警告：当前运行在产品环境下'
 
