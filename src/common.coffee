@@ -27,6 +27,11 @@ exports.response401 = (res)->
   res.statusCode = 401
   res.end()
 
+exports.response404 = (res)->
+  res.statusCode = 404
+  res.end()
+
+
 #检查文件夹是否存在，如果不存在，则创建
 exports.dirPromise = (dir)->
   _fs.mkdirSync dir if not _fs.existsSync dir
