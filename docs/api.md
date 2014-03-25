@@ -91,7 +91,7 @@
 * Verb: `DELETE`
 
 ##更改状态
-* URL：`project/:project_id(\\d+)/status`
+* URL：`project/status/:project_id(\\d+)`
 * Verb: `PUT`
 * Data: 
 
@@ -102,7 +102,7 @@
 ##状态统计
 获取一个项目下所有issue的统计情况，列出各种状态以及此状态下的issue数量
 
-* URL: `project/:project_id(\\d+)/status`
+* URL: `project/status/:project_id(\\d+)`
 * Verb: `GET`
 * Returns
 
