@@ -65,7 +65,7 @@
     },
     {
       "comment": "#获取项目状态，及修改项目状态的路由",
-      "path": "project/:project_id(\\d+)/status",
+      "path": "project/status",
       "biz": "project",
       "method": {
         "get": "getStatus",
