@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="/javascripts/mocha.js"></script>
+  <script src="/javascripts/jquery.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="/javascripts/expect.js"></script>
+  <script src="/javascripts/main.js"></script>
+  <script src="/javascripts/test.js"></script>
+  <link rel="stylesheet" href="/stylesheets/mocha.css">
+  <title>测试用例</title>
+</head>
+<body>
+  <div id="mocha"></div>
+</body>
+<script>
+  $(document).ready(function(){
+    mocha.run()
+  })
+</script>
+</html>
