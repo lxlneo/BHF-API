@@ -2,7 +2,7 @@
   "name": "comment",
   "fields": {
     "issue_id": "",
-    "owner": "",
+    "creator": "integer",
     "content": "text",
     "timestamp": "dateTime"
   }

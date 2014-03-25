@@ -5,6 +5,7 @@
     "content": "text",
     "tag": "",
     "owner": "",
+    "creator": "integer",
     "status": "",
     "timestamp": "dateTime",
     "project_id": "integer"

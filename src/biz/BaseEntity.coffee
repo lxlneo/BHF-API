@@ -8,7 +8,7 @@ class BaseEntity
     return _store.database()(this.schema.name)
 
   #简单的搜索
-  find: (condition, callback)->
+  find: (member, condition, callback)->
     #移除掉undefined的查询条件
     for key, value of condition
       delete condition[key] if value is undefined
@@ -31,7 +31,7 @@ class BaseEntity
     #console.log sql
 
   #简单的存储
-  save: (data, callback)->
+  save: (member, data, callback)->
     #如果包含id，则插入
     if not data.id
       #检查schema中，是否包含timestamp，如果有，则替换为当前日期
@@ -49,7 +49,7 @@ class BaseEntity
           callback(null)
 
   #简单的删除功能
-  remove: (data, callback)->
+  remove: (member, data, callback)->
     this.entity()
     .where('id', data.id)
     .del()

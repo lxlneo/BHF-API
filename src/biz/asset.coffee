@@ -16,7 +16,7 @@ _ = require 'underscore'
 #定义一个Project类
 class Asset extends _BaseEntity
   #重载find
-  find: (condition, callback)->
+  find: (member, condition, callback)->
     super condition, (err, result)->
       _.each result.items, (item)->
         item.url = "/assets/#{item.project_id}/#{item.file_name}"
@@ -24,14 +24,14 @@ class Asset extends _BaseEntity
       callback(err, result)
 
   #读取文件
-  readFile: (req, res, next)->
+  readFile: (member, req, res, next)->
     project_id = req.params.project_id
     filename = req.params.filename
     fullpath = _path.join _commom.rootPath, "asset", project_id, filename
     res.sendfile fullpath
 
   #处理上传文件
-  uploadFile: (req, res, next)->
+  uploadFile: (member, req, res, next)->
     project_id = req.params.project_id
     asset = req.files.asset
 
@@ -49,7 +49,7 @@ class Asset extends _BaseEntity
 
   #保存素材
   saveAsset: (tempFile, project_id)->
-    target_dir = _path.join _commom.rootPath, _config.assets, project_id
+    target_dir = process.env.ASSETS || _path.join _commom.rootPath, _config.assets, project_id
     #不在则创建这个文件夹
     _commom.dirPromise target_dir
     #_fs.mkdirSync target_dir if not _fs.existsSync target_dir

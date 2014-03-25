@@ -8,8 +8,12 @@ _schema = require '../schema/project.json'
 
 #定义一个Project类
 class Project extends _BaseEntity
+  save: (member, data, callback)->
+    data.creator = member.member_id
+    super
+
   #获取项目的issue状态列表
-  getStatus: (req, res, next)->
+  getStatus: (member, req, res, next)->
     project_id = req.params.project_id
     sql = "select status, count(*) total from issue where project_id = #{project_id} group by status"
 
@@ -19,7 +23,7 @@ class Project extends _BaseEntity
     )
 
   #改变project的状态
-  changeStatus: (req, res, next)->
+  changeStatus: (member, req, res, next)->
     project_id = req.params.id
     status = req.body.status
 
@@ -29,8 +33,7 @@ class Project extends _BaseEntity
     }
 
     #修改状态
-    this.save data, (err)->
+    this.save member, data, (err)->
       res.end()
 
-_project = new Project(_schema)
-module.exports = _project
+module.exports = new Project(_schema)

@@ -10,11 +10,13 @@ _async = require 'async'
 #定义一个Project类
 class Issue extends _BaseEntity
   #重载save
-  save: (data, callback)->
+  save: (member, data, callback)->
+    #提取素材列表，并删除原来键值
     assets = (data.assets || []).slice(0)
     delete data.assets
 
-    super data, (err, issue_id)->
+    data.creator = member.member_id
+    super member, data, (err, issue_id)->
       count = 0
       _async.whilst(
         ()->
@@ -22,15 +24,14 @@ class Issue extends _BaseEntity
         ,
         (done)->
           relation_data = issue_id: issue_id, asset_id: assets[count++]
-          _relation.save relation_data, done
+          _relation.save member, relation_data, done
         ()->
-          console.log 'all done'
           callback(err, issue_id)
       )
 
 
   #改变issue的状态
-  changeStatus: (req, res, next)->
+  changeStatus: (member, req, res, next)->
     issue_id = req.params.id
     status = req.body.status
 

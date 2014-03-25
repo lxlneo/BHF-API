@@ -26,6 +26,9 @@ getPaths = (router)->
     paths[method] = path    #"/api/#{path}"
   paths
 
+getMember = (req)->
+  member_id: req.session.member_id || 0
+
 apiRouter = (app, router)->
   biz = require "./biz/#{router.biz}"
   paths = getPaths(router)
@@ -40,8 +43,10 @@ apiRouter = (app, router)->
     if specialMethod and biz[specialMethod]
       #console.log(path, specialMethod)
       app[method] path, (req, res, next)->
+        #获取用户的信息
+        member = getMember req
         #检查权限
-        requestPermission(method, router, req, res) && biz[specialMethod].call(biz, req, res, next)
+        requestPermission(method, router, req, res) && biz[specialMethod].call(biz, member, req, res, next)
       return
 
     #处理常规则的method
@@ -54,23 +59,26 @@ apiRouter = (app, router)->
         when "get" then data = req.query
         when "post", "put" then data = req.body
 
+      #获取用户的信息
+      member = getMember req
+
       #将params合并
       data = _.extend data, req.params
 
       #根据不同的类型，交由默认的业务逻辑处理
       switch method
         when "get"
-          biz.find data, (err, results)->
+          biz.find member, data, (err, results)->
             res.json results
           break
         when "post", "put"
           #return console.log data
           #保存数据
-          biz.save data, (err, new_id)->
+          biz.save member, data, (err, new_id)->
             res.json {id: new_id}
           break
         when "delete"
-          biz.remove data, (error)->
+          biz.remove member, data, (error)->
             res.end()
           break
 
@@ -83,7 +91,8 @@ response404 = (req, res, next)->
 #权限校验，仅检查用户是否已经登录，并不考虑用户的角色
 requestPermission = (method, router, req, res)->
   #非产品环境下不检查权限
-  return true if process.env.NODE_ENV isnt 'production'
+  #不要加这行，如果使用这行，用户退出后还能登录
+  #return true if process.env.NODE_ENV isnt 'production'
 
   #检查是否忽略权限检查
   return true if  _.indexOf(router.anonymity || [], method) >= 0
