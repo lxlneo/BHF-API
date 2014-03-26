@@ -1,7 +1,6 @@
 describe('测试项目模块', function(){
   var module = 'project'
   var specProjUrl = null
-  var projectStatus = '进行中'
 
   console.log('重要提示如果新建项目不成功，则会造成后续的项目都出现问题')
   it('测试新建项目', function(done){
@@ -51,32 +50,22 @@ describe('测试项目模块', function(){
       title: "测试项目的标题被修改"
     }
 
-    doAction(specProjUrl, 'PUT', data, function(status, content){
-      expect(status).to.be(200)
-      done()
-    })
-  })
-
-  //检查结果
-  it('检查返回的数据是否准确', function(done){
-    doAction(specProjUrl, 'GET', null, function(status, content){
-      expect(content.title).to.be("测试项目的标题被修改")
-      done()
+    doAction(specProjUrl, 'PUT', data, function(){
+      doAction(specProjUrl, 'GET', null, function(status, content){
+        expect(content.title).to.be(data.title)
+        done()
+      })
     })
   })
 
 
   it('更改项目状态', function(done){
+    var projectStatus = '进行中'
     doAction(module + '/status/' + PROJECTID, 'PUT', {status: projectStatus}, function(status){
-      expect(status).to.be(200)
-      done()
-    })
-  })
-
-  it('检查项目状态修改是否正确', function(done){
-    doAction(specProjUrl, 'GET', null, function(status, content){
-      expect(content.status).to.be(projectStatus)
-      done()
+      doAction(specProjUrl, 'GET', null, function(status, content){
+        expect(content.status).to.be(projectStatus)
+        done()
+      })
     })
   })
 
