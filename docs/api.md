@@ -11,6 +11,15 @@
 	* 404 没有这个资源
 	* 500 服务器错误
 
+#环境变量
+请参考Node.js的环境变量，参考示例：`PORT=3001 BRANDNEW=yes node-dev app.coffee`
+
+1. `NODE_ENV` 当前运行环境，在产品环境下需要指定`NODE_ENV=production`
+2. `ASSETS`：指定素材库的存储目录，环境变量的优先级比config.json优先级高
+3. `DBPATH`：指定sqlite的存储文件路径，注意，**需要指定包含文件名在内的全路径**。例如：`DBPATH=/var/www/BHF-API/db.sqlite`
+4. `BRANDNEW`：取值为`yes`，在app被启动时，创建全新的环境，一般用于执行测试用例。**警告：这将会删除旧的数据库**
+5. `PORT`：指定运行的端口，默认端口为`14318`
+
 #Project
 ##创建
 
