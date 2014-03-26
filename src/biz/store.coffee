@@ -8,6 +8,7 @@ _fs = require 'fs'
 _async = require 'async'
 _ = require 'underscore'
 _common = require '../common'
+require 'colors'
 
 exports.database = ->
   _knex.initialize
@@ -38,7 +39,10 @@ createTable = (schema, callback)->
 init = ()->
   #检查数据库是否已经存在，如果存在，则退出
   console.log "数据库路径：#{_common.sqlitePath}"
-  return console.log "数据库已经已经存在" if _fs.existsSync _common.sqlitePath
+  if _fs.existsSync _common.sqlitePath
+    return console.log "数据库已经已经存在" if process.env.BRANDNEW isnt 'yes'
+    console.log '数据库已经存在，清除现有数据'.red
+    _fs.unlinkSync _common.sqlitePath
 
   #建表
   dir = '../schema'
