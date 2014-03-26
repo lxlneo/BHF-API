@@ -1,8 +1,7 @@
 describe('测试项目模块', function(){
   var module = 'project'
-  var now = Number(new Date())
-  var lastProjectId = null
   var specProjUrl = null
+  var projectStatus = '进行中'
 
   console.log('重要提示如果新建项目不成功，则会造成后续的项目都出现问题')
   it('测试新建项目', function(done){
@@ -11,15 +10,15 @@ describe('测试项目模块', function(){
       "title": "这是一个测试项目",
       "description": "项目的介绍",
       "contact": "易晓峰",
-      "start_date": now,
-      "end_date": now,
+      "start_date": NOW,
+      "end_date": NOW,
       "repos": "https://github.com/hunantv-honey-lab/BHF-API"
     }
 
     doAction(module, 'POST', data, function(status, content){
       expect(status).to.be(200)
-      expect(lastProjectId = content.id).to.be.a('number')
-      specProjUrl = module + '/' + lastProjectId
+      expect(PROJECTID = content.id).to.be.a('number')
+      specProjUrl = module + '/' + PROJECTID
       done()
     })
   })
@@ -33,7 +32,7 @@ describe('测试项目模块', function(){
 
   it('获取单个项目', function(done){
     doAction(specProjUrl, 'GET', null, function(status, content){
-      expect(content.id).to.be(lastProjectId)
+      expect(content.id).to.be(PROJECTID)
       done()
     })
   })
@@ -66,9 +65,9 @@ describe('测试项目模块', function(){
     })
   })
 
-  var projectStatus = '进行中'
+
   it('更改项目状态', function(done){
-    doAction(module + '/status/' + lastProjectId, 'PUT', {status: projectStatus}, function(status){
+    doAction(module + '/status/' + PROJECTID, 'PUT', {status: projectStatus}, function(status){
       expect(status).to.be(200)
       done()
     })
@@ -81,4 +80,6 @@ describe('测试项目模块', function(){
     })
   })
 
+  //暂时不写删除项目的测试用例，删除项目，需要同时删除相关的所有资源
+  //it('删除项目')
 })

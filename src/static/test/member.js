@@ -16,10 +16,10 @@ describe('测试用户模块', function(){
     })
   })
 
-  it('注册一个新用户' + username, function(done){
+  it('注册一个新用户' + USERNAME, function(done){
     doAction(module, 'POST', {
-        username: username,
-        password: password
+        username: USERNAME,
+        password: PASSWORD
       },function(status, content, xhr){
         if(status == 200){
           //检查返回id是否正确
@@ -32,8 +32,8 @@ describe('测试用户模块', function(){
 
   it('用错误的密码登录', function(done){
     doAction(module, 'PUT', {
-      username: username,
-      password: password + 'a'
+      username: USERNAME,
+      password: PASSWORD + 'a'
     }, function(status, content, xhr){
       expect(status).to.be(406)
       done()
@@ -42,8 +42,8 @@ describe('测试用户模块', function(){
 
   it('用错误的帐号登录', function(done){
     doAction(module, 'PUT', {
-      username: username + 'a',
-      password: password
+      username: USERNAME + 'a',
+      password: PASSWORD
     }, function(status, content, xhr){
       expect(status).to.be(406)
       done()
@@ -52,8 +52,8 @@ describe('测试用户模块', function(){
 
   it('用刚刚的帐号登录', function(done){
     doAction(module, 'PUT', {
-      username: username,
-      password: password
+      username: USERNAME,
+      password: PASSWORD
     }, function(status, content, xhr){
       expect(status).to.be(200)
       done()
@@ -63,7 +63,7 @@ describe('测试用户模块', function(){
   it('检查登录结果', function(done){
     doAction(module, 'GET', null, function(status, content, xhr){
       expect(status).to.be(200)
-      expect(content.username).to.eql(username)
+      expect(content.username).to.eql(USERNAME)
       done()
     })
   })
@@ -84,8 +84,8 @@ describe('测试用户模块', function(){
 
   it('为接下来的测试登录', function(done){
     doAction(module, 'PUT', {
-      username: username,
-      password: password
+      username: USERNAME,
+      password: PASSWORD
     }, function(status, content, xhr){
       expect(status).to.be(200)
       done()
