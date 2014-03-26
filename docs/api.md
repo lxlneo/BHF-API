@@ -413,4 +413,9 @@
 		}
 		
 
+##commit message的标签
+在提交commit的时候，可以通过在message中添加指定的标签，触发相应的操作。标签的格式为#+标签+空格，如`#12 #done message`
+
+* `#(\\id)+` 关联到某个issue，例如`#12 某某问题`，这条将会关联到id为12的issue下
+* `#done`	完成某个issue，必需和issue id的宏一起才生效，如`#12 #done 某个问题终于完成了`
 
