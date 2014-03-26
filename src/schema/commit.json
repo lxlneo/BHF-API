@@ -1,0 +1,13 @@
+{
+  "name": "commit",
+  "fields": {
+    "project_id": "integer",
+    "creator": "integer",
+    "message": "text",
+    "sha": "",
+    "addtion": "integer",
+    "deletion": "integer",
+    "file": "integer",
+    "timestamp": "dateTime"
+  }
+}

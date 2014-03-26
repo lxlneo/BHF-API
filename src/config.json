@@ -1,5 +1,5 @@
 {
-  "dbpath": "./db.sqlite3",
+  "dbpath": "./db.sqlite",
   "assets": "./assets",
   "uploads": "./uploads",
   "rootAPI": "/api/",
@@ -8,6 +8,16 @@
       "comment": "项目",
       "path": "project",
       "biz": "project"
+    },
+    {
+      "comment": "提交commit，用于git或svn提交commit时，自动获取commit并分析",
+      "path": "commit",
+      "biz": "commit",
+      "method": {
+        "delete": false,
+        "put": false,
+        "get": false
+      }
     },
     {
       "comment": "素材",
