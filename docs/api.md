@@ -130,6 +130,7 @@
 		  }
 		]
 
+
 #Issue
 ##创建
 在指定的project下创建issue
@@ -383,3 +384,33 @@
 ##注销
 * URL: `mine`
 * Verb: `DELETE`
+
+#Git Commit
+
+##接收Git Commit
+
+* URL: `commit`
+* Verb: `POST`
+* Data：
+当git commit发生时，向服务器提交commit相关的信息，要求提交一个合法的JSON数据
+
+		{
+			branch: "master",
+			account: "标识用户的帐号，例如在git中的email",
+			repos: "远程repos的地址",
+			items: [
+				{
+					sha: "每个commit的唯一编号",
+					//添加的行数
+					addition: 3,
+					//删除的行数
+					deletion: 5,
+					//受影响的文件数
+					file: 4,
+					message: "详细的描述"
+				}
+			]
+		}
+		
+
+
