@@ -110,7 +110,7 @@ module.exports = (app)->
   app.get '/', (req, res, next)->
     res.sendfile 'static/index.html'
 
-  app.get '/doc.html', require('./biz/docs').document
+  app.get '/doc.html', require('./docs').document
 
   _config.routers.forEach (router)->
     apiRouter app, router

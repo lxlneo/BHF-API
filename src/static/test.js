@@ -39,6 +39,7 @@ function postIssue(projectId, callback){
     url: root + 'project/' + projectId + '/issue',
     type: 'POST',
     data: {
+      "assets": [1, 2, 3, 4],
       //标题
       "title": "首页搜索栏要实时展示",
       //内容
@@ -59,7 +60,7 @@ function postProject(callback){
     type: 'POST',
     data: {
       //项目标题
-      "title": "芒果网首页",
+      "title": "芒果网首页'\"",
       //项目的详细描述
       "description": "芒果网的新版首页",
       //指定具体的联系人，这个联系人是需求方的项目负责人
@@ -74,9 +75,9 @@ function postProject(callback){
   })
 }
 
-function postComment(callback){
+function postComment(issue_id, callback){
   $.ajax({
-    url: root + 'issue/3/comment',
+    url: root + 'issue/' + issue_id + '/comment',
     type: 'POST',
     data: {
       "content": "请见#1 号issue"
@@ -92,10 +93,10 @@ function fetchProject(callback){
 
 function signUp(callback){
   $.ajax({
-    url: root + 'signup',
-    type: 'post',
+    url: root + 'mine',
+    type: 'POST',
     data: {
-      username: 'conis',
+      username: '兰斌',
       password: '123456'
     }
   })
@@ -106,7 +107,7 @@ function signIn(callback){
     url: root + 'mine',
     type: 'PUT',
     data: {
-      username: 'conis',
+      username: '兰斌',
       password: '123456'
     },
     success: function(){

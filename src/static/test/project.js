@@ -24,7 +24,7 @@ describe('测试项目模块', function(){
 
   it('获取所有项目', function(done){
     doAction(module, 'GET', null, function(status, content){
-      expect(content.items.length).to.be.greaterThan(1)
+      expect(content.items.length).to.be.greaterThan(0)
       done()
     })
   })

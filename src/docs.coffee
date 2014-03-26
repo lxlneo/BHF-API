@@ -1,6 +1,6 @@
 _md = require("node-markdown").Markdown
 _path = require 'path'
-_common = require 'common'
+_common = require './common'
 _fs = require 'fs'
 
 exports.document = (req, res, next)->

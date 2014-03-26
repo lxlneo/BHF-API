@@ -1,7 +1,7 @@
 {
   "name": "comment",
   "fields": {
-    "issue_id": "",
+    "issue_id": "integer",
     "creator": "integer",
     "content": "text",
     "timestamp": "dateTime"
