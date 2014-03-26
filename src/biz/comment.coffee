@@ -7,8 +7,13 @@ _schema = require '../schema/comment.json'
 
 #定义一个Project类
 class Comment extends _BaseEntity
-  save: (member, data, callback)->
-    data.creator = member.member_id
-    super member, data, callback
+  constructor: ()->
+    @schema = _schema
+    super
 
-module.exports = new Comment(_schema)
+  #保存数据
+  save: (data, callback)->
+    data.creator = this.member.member_id
+    super data, callback
+
+module.exports = Comment

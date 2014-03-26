@@ -9,22 +9,26 @@ _common = require '../common'
 _schema = require '../schema/member.json'
 
 class Member extends _BaseEntity
+  constructor: ()->
+    @schema = _schema
+    super
+
   #检查用户是否已经存在
-  memberExists: (member, username, callback)->
+  memberExists: (username, callback)->
     condition =
       username: username
 
-    this.find member, condition, (err, result)->
+    this.find condition, (err, result)->
       callback err, result.items.length > 0
 
   #登录
-  signIn: (member, req, res, next)->
+  signIn: (req, res, next)->
     username = req.body.username
     password = req.body.password
     data = username: username
 
     errMessage = "用户名或者密码错误"
-    this.find member, data, (err, result)->
+    this.find data, (err, result)->
       #没有这个用户名
       if result.items.length == 0
         return _common.response406 res, errMessage
@@ -43,35 +47,35 @@ class Member extends _BaseEntity
       res.end()
 
   #用户注册
-  signUp: (member, req, res, next)->
+  signUp: (req, res, next)->
     #暂不做任何验证
     data =
       username: req.body.username
       password: req.body.password
 
     self = this;
-    this.memberExists member, data.username, (err, exists)->
+    this.memberExists data.username, (err, exists)->
       if(exists)
         return _common.response406 res, "用户名#{data.username}已经存在，请选择其它用户名"
 
       data.password = _common.md5 data.password
-      self.save member, data, (err, member_id)->
+      self.save data, (err, member_id)->
         res.json {id: member_id}
 
   #获取用户的信息
-  getMember: (member, req, res, next)->
+  getMember: (req, res, next)->
     #测试环境下，可能取消了登录限制，这里可以校验用户是否登录
-    return _common.response401(res) if not member.member_id
+    return _common.response401(res) if not this.member.member_id
     res.json
       username: req.session.username
       email: req.session.email
 
   #退出
-  signOut: (member, req, res, next)->
+  signOut: (req, res, next)->
     #删除session
     delete req.session.member_id
     delete req.session.email
     delete req.session.username
     res.end()
 
-module.exports = new Member(_schema)
+module.exports = Member

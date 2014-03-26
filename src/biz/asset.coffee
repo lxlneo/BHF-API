@@ -5,7 +5,6 @@
 _store = require('./store')
 _schema = require '../schema/asset.json'
 _BaseEntity = require './BaseEntity'
-_air = require './asset_issue_relation'
 _fs = require 'fs'
 _commom = require '../common'
 _config = require '../config.json'
@@ -15,8 +14,11 @@ _ = require 'underscore'
 
 #定义一个Project类
 class Asset extends _BaseEntity
+  constructor: ()->
+    @schema = _schema
+    super
   #重载find
-  find: (member, condition, callback)->
+  find: (condition, callback)->
     super condition, (err, result)->
       _.each result.items, (item)->
         item.url = "/assets/#{item.project_id}/#{item.file_name}"
@@ -24,14 +26,14 @@ class Asset extends _BaseEntity
       callback(err, result)
 
   #读取文件
-  readFile: (member, req, res, next)->
+  readFile: (req, res, next)->
     project_id = req.params.project_id
     filename = req.params.filename
     fullpath = _path.join _commom.rootPath, "asset", project_id, filename
     res.sendfile fullpath
 
   #处理上传文件
-  uploadFile: (member, req, res, next)->
+  uploadFile: (req, res, next)->
     project_id = req.params.project_id
     asset = req.files.asset
 
@@ -64,4 +66,4 @@ class Asset extends _BaseEntity
     #返回新的文件名
     filename
 
-module.exports = new Asset(_schema)
+module.exports = Asset

@@ -9,12 +9,16 @@ _common = require '../common'
 
 #定义一个Project类
 class Project extends _BaseEntity
-  save: (member, data, callback)->
-    data.creator = member.member_id
+  constructor: ()->
+    @schema = _schema
+    super
+
+  save: (data, callback)->
+    data.creator = this.member.member_id
     super
 
   #获取项目的issue状态列表
-  getStatus: (member, req, res, next)->
+  getStatus: (req, res, next)->
     project_id = req.params.id
     return _common.response404(res) if not project_id
 
@@ -26,7 +30,7 @@ class Project extends _BaseEntity
     )
 
   #改变project的状态
-  changeStatus: (member, req, res, next)->
+  changeStatus: (req, res, next)->
     project_id = req.params.id
     status = req.body.status
 
@@ -36,7 +40,7 @@ class Project extends _BaseEntity
     }
 
     #修改状态
-    this.save member, data, (err)->
+    this.save data, (err)->
       res.end()
 
-module.exports = new Project(_schema)
+module.exports = Project

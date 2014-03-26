@@ -6,8 +6,13 @@ _BaseEntity = require './BaseEntity'
 _schema = require '../schema/commit.json'
 
 class Commit extends _BaseEntity
-  save: (member, data, callback)->
-    data.creator = member.member_id
-    super member, data, callback
+  constructor: ()->
+    @schema = _schema
+    super
 
-module.exports = new Commit(_schema)
+  #保存数据
+  save: (data, callback)->
+    data.creator = this.member.member_id
+    super data, callback
+
+module.exports = Commit

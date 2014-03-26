@@ -105,15 +105,6 @@
           "get": "获取用户信息，用于判断用户是否登录"
         }
       }
-    },
-    {
-      "paths": {
-        "get": "/doc.html"
-      },
-      "biz": "docs",
-      "method": {
-        "get": "document"
-      }
     }
   ]
 }

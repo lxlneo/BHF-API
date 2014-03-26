@@ -31,7 +31,7 @@ getMember = (req)->
   member_id: req.session.member_id || 0
 
 apiRouter = (app, router)->
-  biz = require "./biz/#{router.biz}"
+  Entity = require "./biz/#{router.biz}"
   paths = getPaths(router)
 
   ["get", "post", "delete", "put"].forEach (method)->
@@ -44,13 +44,15 @@ apiRouter = (app, router)->
     #由业务逻辑指定的处理处理
     if specialMethod
       #如果配置中指定了方法，但在实际的逻辑中没有这个方法，则提出一个警告并退出。
-      return console.error "警告：无法进入[#{router.biz}.#{specialMethod}]方法".red if not biz[specialMethod]
+      return console.error "警告：无法进入[#{router.biz}.#{specialMethod}]方法".red if not Entity::[specialMethod]
+
       #console.log(path, specialMethod)
       app[method] path, (req, res, next)->
-        #获取用户的信息
-        member = getMember req
-        #检查权限
-        requestPermission(method, router, req, res) && biz[specialMethod].call(biz, member, req, res, next)
+        #检查权限没有通过
+        return if not requestPermission method, router, req, res
+
+        entity = new Entity getMember(req)
+        entity[specialMethod].call(entity, req, res, next)
       return
 
     #处理常规则的method
@@ -63,27 +65,25 @@ apiRouter = (app, router)->
         when "get" then data = req.query
         when "post", "put" then data = req.body
 
-      #获取用户的信息
-      member = getMember req
-
       #将params合并
       data = _.extend data, req.params
 
+      entity = new Entity getMember(req)
       #根据不同的类型，交由默认的业务逻辑处理
       switch method
         when "get"
-          biz.find member, data, (err, results)->
+          entity.find data, (err, results)->
             return _common.response404(res) if data.id and results is null
             res.json results
           break
         when "post", "put"
           #return console.log data
           #保存数据
-          biz.save member, data, (err, new_id)->
+          entity.save data, (err, new_id)->
             res.json {id: new_id}
           break
         when "delete"
-          biz.remove member, data, (error)->
+          entity.remove data, (error)->
             res.end()
           break
 

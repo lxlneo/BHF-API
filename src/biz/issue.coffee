@@ -4,20 +4,26 @@
 _store = require('./store')
 _BaseEntity = require './BaseEntity'
 _schema = require '../schema/issue.json'
-_relation = require './asset_issue_relation'
+_AssetIssueRelation = require './asset_issue_relation'
 _async = require 'async'
 
 #定义一个Project类
 class Issue extends _BaseEntity
+  constructor: ()->
+    @schema = _schema
+    super
+
   #重载save
-  save: (member, data, callback)->
+  save: (data, callback)->
     #提取素材列表，并删除原来键值
     assets = ((data.assets instanceof Array and data.assets) || [])[..]
     delete data.assets
 
-    data.creator = member.member_id
-    super member, data, (err, issue_id)->
-      _relation.replaceAll member, assets, data.id || issue_id, ()->
+    data.creator = this.member.member_id
+    self = this
+    super data, (err, issue_id)->
+      air = new _AssetIssueRelation self.member
+      air.replaceAll assets, data.id || issue_id, ()->
         callback err, issue_id
     ###
       return done() if not data.id
@@ -37,7 +43,7 @@ class Issue extends _BaseEntity
     ###
 
   #改变issue的状态
-  changeStatus: (member, req, res, next)->
+  changeStatus: (req, res, next)->
     issue_id = req.params.id
     status = req.body.status
 
@@ -47,8 +53,8 @@ class Issue extends _BaseEntity
     }
 
     #修改状态
-    this.save member, data, (err)->
+    this.save data, (err)->
       res.end()
 
 
-module.exports = new Issue(_schema)
+module.exports = Issue
