@@ -2,7 +2,7 @@
   "dbpath": "./db.sqlite",
   "assets": "./assets",
   "uploads": "./uploads",
-  "rootAPI": "/api/",
+  "rootAPI": "/",
   "routers": [
     {
       "comment": "项目",
