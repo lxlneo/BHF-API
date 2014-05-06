@@ -5,6 +5,7 @@ _ = require 'underscore'
 _config = require './config.json'
 _common = require './common'
 require 'colors'
+_verbs = ["post", "get", "put", "delete"]
 
 #anonymity
 #获取crud的默认path
@@ -17,7 +18,7 @@ getPaths = (router)->
     put: "/:id(\\d+)"
     delete: "/:id(\\d+)"
 
-  ["post", "get", "put", "delete"].forEach (method)->
+  _verbs.forEach (method)->
     #如果有指定paths，优先取指定method的path，如果没有取到，则取paths.all
     #假如在paths中没有取到，则拼装path
     path = (router.paths && (router.paths[method] || router.paths.all)) ||
@@ -59,6 +60,7 @@ apiRouter = (app, router)->
     app[method] path, (req, res, next)->
       #用户校验
       return if not requestPermission(method, router, req, res)
+      console.log path
       #处理data部分
       data = {}
       switch method
@@ -97,7 +99,7 @@ response404 = (req, res, next)->
 requestPermission = (method, router, req, res)->
   #非产品环境下不检查权限
   #不要加这行，如果使用这行，用户退出后还能登录
-  #return true if process.env.NODE_ENV isnt 'production'
+  return true if process.env.NODE_ENV isnt 'production'
 
   #检查是否忽略权限检查
   return true if  _.indexOf(router.anonymity || [], method) >= 0

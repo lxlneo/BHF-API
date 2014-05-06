@@ -4,7 +4,7 @@ _common = require './common'
 _fs = require 'fs'
 
 exports.document = (req, res, next)->
-  path = _path.join _common.rootPath, '../docs/api.md'
+  path = _path.join _common.rootPath, './docs/api.md'
 
   content = _fs.readFileSync path, 'utf-8'
   #toc = _toc(content)
