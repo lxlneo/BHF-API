@@ -6,7 +6,7 @@ _express = require 'express'
 _http = require 'http'
 _app = _express()
 _router = require './router'
-_config = require './config.json'
+_config = require './config'
 _common = require './common'
 _path = require 'path'
 

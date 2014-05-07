@@ -4,7 +4,7 @@
 _path = require 'path'
 _crypto = require 'crypto'
 _fs = require 'fs'
-_config = require './config.json'
+_config = require './config'
 
 #获取程序的主目录
 exports.rootPath = _path.dirname(require.main.filename)

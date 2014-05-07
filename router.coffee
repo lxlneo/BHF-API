@@ -2,7 +2,7 @@
   路由
 ###
 _ = require 'underscore'
-_config = require './config.json'
+_config = require './config'
 _common = require './common'
 require 'colors'
 _verbs = ["post", "get", "put", "delete"]

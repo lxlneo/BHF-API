@@ -2,7 +2,7 @@
   用于数据存储
 ###
 _knex = require 'knex'
-_config = require '../config.json'
+_config = require '../config'
 _path = require 'path'
 _fs = require 'fs'
 _async = require 'async'
