@@ -55,6 +55,7 @@ class Member extends _BaseEntity
       realname: req.body.realname
       email: req.body.email
       git: req.body.git
+      role: 'user'    #默认用户权限为用户
 
     self = this;
     this.memberExists data.username, (err, exists)->
@@ -84,7 +85,7 @@ class Member extends _BaseEntity
   #获取用户列表
   allMember: (req, res, next)->
     options =
-      fields: 'username'
+      fields: ['username', 'realname']
 
     this.find null, options, (err, result)->
       res.json result
