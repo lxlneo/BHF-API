@@ -21,9 +21,13 @@ class BaseEntity
 
     exec = this.entity()
     .where condition
-      .select(options.fields || '*')
+
+    #如果存在
+    options.beforeQuery?(exec)
+    exec.select(options.fields || '*')
 
     sql = exec.toString()
+    console.log sql
 
     exec.then((items)->
       #如果存在id，则表示查找单条数据
