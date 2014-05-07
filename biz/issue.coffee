@@ -22,25 +22,12 @@ class Issue extends _BaseEntity
     data.creator = this.member.member_id
     self = this
     super data, (err, issue_id)->
+      #如果是更新，则没有提交新的assets，则不更新assets。这里会有一个问题，如果客户端要删除所有的assets的关联时，会出问题，这个问题以后再处理。
+      return callback err, issue_id if data.id and assets.length is 0
+
       air = new _AssetIssueRelation self.member
       air.replaceAll assets, data.id || issue_id, ()->
         callback err, issue_id
-    ###
-      return done() if not data.id
-    console.log 'error'
-    #如果是更新的前题下，则需要删除所有的关系
-    _relation.unlinkAll member, data.id, done
-      count = 0
-      _async.whilst(
-        ()-> count < assets.length
-        ,
-        (done)->
-          relation_data = issue_id: issue_id, asset_id: assets[count++]
-          _relation.save member, relation_data, done
-        ()->
-          callback(err, issue_id)
-      )
-    ###
 
   #改变issue的状态
   changeStatus: (req, res, next)->
