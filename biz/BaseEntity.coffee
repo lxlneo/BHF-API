@@ -9,14 +9,18 @@ class BaseEntity
     return _store.database()(this.schema.name)
 
   #简单的搜索
-  find: (condition, callback)->
+  find: (condition, options, callback)->
+    if typeof options is 'function'
+      callback = options
+      options = {}
+
     #移除掉undefined的查询条件
     for key, value of condition
       delete condition[key] if value is undefined
 
     exec = this.entity()
     .where condition
-      .select('*')
+      .select(options.fields || '*')
 
     sql = exec.toString()
 
