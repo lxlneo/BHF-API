@@ -240,11 +240,15 @@
 ##创建
 在指定的issue下，创建comment
 
-* URL：`issue/:issue_id(\\d+)/comment`
+* URL：`issue/:target_id(\\d+)/comment`
 * Verb: `POST`
 * Data：
 
 		{
+		    //父级的comment_id，用于嵌套评论。如果是最上级的comment，则parent_id为0
+		    "parent_id": 1
+		    //评论的类型，目前可选为issue和project
+		    "type": "",
 			//评论的内容
 			"content": "请见#1 号issue",
 		}

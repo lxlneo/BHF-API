@@ -1,9 +1,11 @@
 {
-  "name": "comment",
-  "fields": {
-    "issue_id": "integer",
-    "creator": "integer",
-    "content": "text",
-    "timestamp": "dateTime"
-  }
+    "name": "comment",
+    "fields": {
+        "type": "",
+        "target_id": "integer",
+        "creator": "integer",
+        "content": "text",
+        "timestamp": "dateTime",
+        "parent_id": "integer"
+    }
 }

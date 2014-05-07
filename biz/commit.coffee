@@ -16,6 +16,6 @@ class Commit extends _BaseEntity
   #保存数据
   save: (data, callback)->
     data.creator = this.member.member_id
-    super data, callback
+    super
 
 module.exports = Commit
