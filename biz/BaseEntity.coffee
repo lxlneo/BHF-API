@@ -14,6 +14,7 @@ class BaseEntity
       callback = options
       options = {}
 
+    condition = condition || {}
     #移除掉undefined的查询条件
     for key, value of condition
       delete condition[key] if value is undefined
