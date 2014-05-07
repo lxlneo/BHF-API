@@ -1,110 +1,100 @@
+###
+  路由规则
+  1. routers每个item都是一个restful路由，包含crud的四种方法
+  2. paths优先原则，paths需要指定全路径，路由处理不会组合新的path。paths.all可以指定所有paths的路径，但如果有具体的处理方法，则具体的方法优先。如paths.get将会优先于paths.all。同时paths可以加#{rootAPI}作为变量，这个将会替换为config文件中的rootAPI
+
+    {
+      #paths优先，比path的优先级高
+      paths: {
+        #如果没有指定具体的curd，则会使用all这个路由
+        all: '#{rootAPI}someURL'
+        #这个会优先于all
+        get: '/asset/:project_id(\\d+)/:filename'
+      },
+      #指定一个path，这个和paths是互斥的
+      path: 'commit'
+      #用于指定将要处理的业务逻辑文件，对应biz文件夹下的具体文件
+      biz: 'commit'
+      #指定允许匿名的方法
+      anonymity: ['post']
+      #为删除指定方法，则put/get将不会被处理
+      method: delete: 'deleteMethod', put: false, get: false
+    },
+###
 module.exports =
-  dbpath: './db.sqlite',
-  assets: './assets',
-  uploads: './uploads',
-  rootAPI: '/api/',
+  dbpath: './db.sqlite'
+  assets: './assets'
+  uploads: './uploads'
+  rootAPI: '/api/'
   routers: [
     {
-      comment: '项目',
-      path: 'project',
+      #项目相关的路由
+      #路由地址
+      path: 'project'
+      #处理的业务逻辑
       biz: 'project'
     },
     {
-      comment: '提交commit，用于git或svn提交commit时，自动获取commit并分析',
-      path: 'commit',
-      biz: 'commit',
-      anonymity: ['post'],
-      method: {
-        delete: false,
-        put: false,
-        get: false
-      }
+      #提交commit，用于git或svn提交commit时，自动获取commit并分析
+      path: 'commit'
+      biz: 'commit'
+      anonymity: ['post']
+      method: delete: false, put: false, get: false
     },
     {
-      comment: '素材',
-      path: 'project/:project_id(\\d+)/asset',
-      biz: 'asset',
-      method: {
-        post: 'uploadFile',
-        delete: false,
-        put: false
-      }
+      #素材
+      path: 'project/:project_id(\\d+)/asset'
+      biz: 'asset'
+      method: post: 'uploadFile', delete: false, put: false
     },
     {
-      comment: '#查看素材',
+      ##查看素材
       paths:{
         get: '/asset/:project_id(\\d+)/:filename'
       },
-      biz: 'asset',
-      method: {
-        get: 'readFile',
-        put: false,
-        post: false,
-        delete: false
-      }
+      biz: 'asset'
+      method: get: 'readFile', put: false, post: false, delete: false
     },{
-      comment: '#issue',
+      #issue相关
       path: 'project/:project_id(\\d+)/issue',
       biz: 'issue'
     },
     {
-      comment: '针对issue的评论',
-      path: 'issue/:issue_id(\\d+)/comment',
-      biz: 'comment',
-      method: {
-        put: false
-      }
+      #针对issue的评论
+      path: 'issue/:issue_id(\\d+)/comment'
+      biz: 'comment'
+      method: put: false
     },
     {
-      comment: '#建立或者解除asset与issue的关系',
-      path: 'issue/:issue_id(\\d+)/asset',
-      biz: 'asset_issue_relation',
-      method: {
-        put: false
-      }
+      #建立或者解除asset与issue的关系
+      path: 'issue/:issue_id(\\d+)/asset'
+      biz: 'asset_issue_relation'
+      method: put: false
     },
     {
-      comment: '#更改issue的状态，仅能更新',
-      path: 'issue/status',
-      biz: 'issue',
-      method: {
-        get: false,
-        delete: false,
-        post: false,
-        put: 'changeStatus'
-      }
+      #更改issue的状态，仅能更新
+      path: 'issue/status'
+      biz: 'issue'
+      method: get: false, delete: false,  post: false, put: 'changeStatus'
     },
     {
-      comment: '#获取项目状态，及修改项目状态的路由',
-      path: 'project/status',
-      biz: 'project',
-      method: {
-        get: 'getStatus',
-        delete: false,
-        post: false,
-        put: 'changeStatus'
-      }
+      #获取项目状态，及修改项目状态的路由
+      path: 'project/status'
+      biz: 'project'
+      method: get: 'getStatus', delete: false, post: false, put: 'changeStatus'
     },
     {
       paths: {
+        #指定all，则所有curd都采用这个地址，不会做任何处理
         all: '#{rootAPI}mine'
       },
-      biz: 'member',
-      method: {
-        post: 'signUp',
-        put: 'signIn',
-        delete: 'signOut',
-        get: 'getMember'
-      },
-      anonymity: ['post', 'put'],
-      comment: {
-        summary: '用户模块',
-        method: {
-          post: '用户注册',
-          put: '用户登录',
-          delete: '注销',
-          get: '获取用户信息，用于判断用户是否登录'
-        }
-      }
+      biz: 'member'
+      method:  post: 'signUp', put: 'signIn', delete: 'signOut', get: 'currentMember'
+      anonymity: ['post', 'put']
+    },{
+      #用于获取用户的信息，一般用于管理或者用户的profile
+      path: 'member'
+      biz: 'member'
+      method: get: 'allMember', put: false, delete: false, post: false
     }
   ]
