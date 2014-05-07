@@ -52,6 +52,9 @@ class Member extends _BaseEntity
     data =
       username: req.body.username
       password: req.body.password
+      realname: req.body.realname
+      email: req.body.email
+      git: req.body.git
 
     self = this;
     this.memberExists data.username, (err, exists)->

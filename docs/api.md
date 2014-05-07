@@ -342,7 +342,7 @@
 不支持删除
 
 
-#Member
+#登录注册
 用户相关，注册/登录/注销/获取用户资料(登录检测)
 
 ##检测登录
@@ -376,14 +376,39 @@
 * Data: 
 
 	 	{
-	      username: 'conis',
-	      password: '123456',
-	      email: 'email@gmail.com'
+	 	    realname: '张三',     //真实姓名
+            username: 'conis',    //用户名
+            password: '123456',     //密码
+            email: 'email@gmail.com',    //用户邮件
+            git: 'git@git.hunantv.com'  //用户的git帐号
 	    }
 
 ##注销
 * URL: `mine`
 * Verb: `DELETE`
+
+#成员相关
+
+##获取所有成员
+* URL: `member`
+* Verb: `GET`
+* Returns:
+返回所有的成员信息
+
+        {
+          "items": [
+            {
+              "username": "1395824836378"
+            },
+            {
+              "username": "1395825160239"
+            }
+          ],
+          "pagination": {
+            "page_index": 1,
+            "page_size": 10
+          }
+        }
 
 #Git Commit
 
