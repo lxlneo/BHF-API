@@ -62,8 +62,8 @@ class Member extends _BaseEntity
       self.save data, (err, member_id)->
         res.json {id: member_id}
 
-  #获取用户的信息
-  getMember: (req, res, next)->
+  #获取当前用户的信息
+  currentMember: (req, res, next)->
     #测试环境下，可能取消了登录限制，这里可以校验用户是否登录
     return _common.response401(res) if not this.member.member_id
     res.json
@@ -77,5 +77,14 @@ class Member extends _BaseEntity
     delete req.session.email
     delete req.session.username
     res.end()
+
+  #获取用户列表
+  allMember: (req, res, next)->
+    options =
+      fields: 'username'
+
+    this.find null, options, (err, result)->
+      res.json result
+
 
 module.exports = Member
