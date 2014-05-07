@@ -30,8 +30,8 @@ class Comment extends _BaseEntity
       delete cond.issue_id
     else if cond.project_id       #针对项目的评论
       cond.type = 'project'
-      cond.target_id = data.project_id
-      delete cond.issue_id
+      cond.target_id = cond.project_id
+      delete cond.project_id
 
     #选项
     options =

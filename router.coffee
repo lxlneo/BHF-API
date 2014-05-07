@@ -60,7 +60,7 @@ apiRouter = (app, router)->
     app[method] path, (req, res, next)->
       #用户校验
       return if not requestPermission(method, router, req, res)
-      console.log path
+      #console.log path
       #处理data部分
       data = {}
       switch method

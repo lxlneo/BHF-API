@@ -236,19 +236,17 @@
 * URL：`issue/:issue_id(\\d+)/asset/(\\id)`
 * Verb: `DELETE`
 
-#Comment
+#Comment For issue
 ##创建
 在指定的issue下，创建comment
 
-* URL：`issue/:target_id(\\d+)/comment`
+* URL：`issue/:issue_id(\\d+)/comment`
 * Verb: `POST`
 * Data：
 
 		{
-		    //父级的comment_id，用于嵌套评论。如果是最上级的comment，则parent_id为0
+		    //父级的comment_id，用于评论的回复。如果是最上级的comment，则parent_id为0
 		    "parent_id": 1
-		    //评论的类型，目前可选为issue和project
-		    "type": "",
 			//评论的内容
 			"content": "请见#1 号issue",
 		}
@@ -266,15 +264,17 @@
 		  "items": [
 		    {
 		      "id": 4,
-		      "issue_id": "3",
+		      "target_id": "3",
+		      "parent_id": 0,
 		      "owner": null,
 		      "content": "请见#1 号issue",
 		      "timestamp": null
 		    },
 		    {
 		      "id": 5,
-		      "issue_id": "3",
+		      "target_id": "3",
 		      "owner": null,
+		      "parent_id": 0,
 		      "content": "请见#1 号issue",
 		      "timestamp": 1395222914784
 		    }
@@ -286,15 +286,54 @@
 		}
 
 
+##查询单条评论
+查询某个issue下的评论以及回复
+
+* URL：`issue/:issue_id(\\d+)/comment/:id(\\d+)`
+* Verb: `GET`
+* Retuns：
+
+		{
+		  "items": [
+		    {
+		      "id": 4,
+		      "target_id": "3",
+		      "parent_id": 0,
+		      "owner": null,
+		      "content": "请见#1 号issue",
+		      "timestamp": null
+		    },
+		    {
+		      "id": 5,
+		      "issue_id": "3",
+		      "owner": null,
+		      "parent_id": 4,
+		      "content": "请见#1 号issue",
+		      "timestamp": 1395222914784
+		    }
+		  ],
+		  "pagination": {
+		    "page_index": 1,
+		    "page_size": 10
+		  }
+		}
+
 ##更新
 不支持对comment的更新 
 
 
 ##删除
 
-* URL：`issue/:issue_id(\\d+)/comment/(\\d+)`
+* URL：`issue/:issue_id(\\d+)/comment/:id(\\d+)`
 * Verb: `DELETE`
 
+#Comment For project
+请参考**Comment For issue**部分，不同的仅仅是url部分，不再赘述。相关的URL如下：
+
+* 创建：`project/:project_id(\\d+)/comment`
+* 查询：`project/:project_id(\\d+)/comment`
+* 查询单条评论：`project/:project_id(\\d+)/comment/:id(\\d+)`
+* 删除：`project/:project_id(\\d+)/comment/:id(\\d+)`
 
 #Asset
 ##创建

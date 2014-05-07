@@ -66,6 +66,12 @@ module.exports =
       method: put: false
     },
     {
+      #针对project的评论
+      path: 'project/:project_id(\\d+)/comment'
+      biz: 'comment'
+      method: put: false
+    },
+    {
       #建立或者解除asset与issue的关系
       path: 'issue/:issue_id(\\d+)/asset'
       biz: 'asset_issue_relation'
