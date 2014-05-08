@@ -100,8 +100,6 @@ class Commit extends _BaseEntity
     #处理git commit
   ###
   postCommits: (data, cb)->
-    console.log JSON.stringify(data)
-    return cb()
     self = @
     queue = []
     #取得projectid
