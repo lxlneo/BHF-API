@@ -13,6 +13,15 @@ class Issue extends _BaseEntity
     @schema = _schema
     super
 
+  #完成某个issue，将会触发一系列操作，比如说发邮件等
+  finishedIssue: (id, cb)->
+    data =
+      id: id
+      status: 'done'
+      finish_time: Number(new Date())
+    #暂时只做保存，并不做其它处理
+    @save data, cb
+
   #重载save
   save: (data, callback)->
     #提取素材列表，并删除原来键值
@@ -40,7 +49,7 @@ class Issue extends _BaseEntity
     }
 
     #修改状态
-    this.save data, (err)->
+    super data, (err)->
       res.end()
 
 
