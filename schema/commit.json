@@ -2,12 +2,12 @@
   "name": "commit",
   "fields": {
     "project_id": "integer",
+    "issue_id": "integer",
     "creator": "integer",
     "message": "text",
-    "sha": "",
-    "addtion": "integer",
+    "sha": "text",
+    "addition": "integer",
     "deletion": "integer",
-    "file": "integer",
     "timestamp": "dateTime"
   }
 }

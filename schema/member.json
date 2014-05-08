@@ -4,6 +4,8 @@
     "username": "",
     "email": "",
     "password": "",
-    "role": ""
+    "realname": "",
+    "role": "",
+    "git": ""
   }
 }
