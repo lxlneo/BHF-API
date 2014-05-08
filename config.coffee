@@ -36,10 +36,10 @@ module.exports =
     },
     {
       #提交commit，用于git或svn提交commit时，自动获取commit并分析
-      path: 'commit'
+      path: 'git/commit'
       biz: 'commit'
       anonymity: ['post']
-      method: delete: false, put: false, get: false
+      method: delete: false, put: false, get: false, post: 'gitCommit'
     },
     {
       #素材

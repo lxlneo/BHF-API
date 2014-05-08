@@ -46,6 +46,7 @@ class BaseEntity
 
   #简单的存储
   save: (data, callback)->
+    data = data || {}
     #如果包含id，则插入
     if not data.id
       #检查schema中，是否包含timestamp，如果有，则替换为当前日期
