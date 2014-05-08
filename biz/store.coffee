@@ -52,7 +52,8 @@ init = ()->
   tables = _fs.readdirSync _path.join(__dirname, dir)
   _async.eachSeries(tables, ((item, callback)->
     #只处理指定扩展名的文件
-    callback null if _path.extname item is not allowExt
+    return callback null if _path.extname(item) isnt allowExt
+
     #获取schema
     schema = require "#{dir}/#{item}"
     console.log "创建表：#{item}"
