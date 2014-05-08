@@ -4,6 +4,7 @@ var USERNAME = Number(new Date())
 var PASSWORD = '123456'
 var PROJECTID = 0
 var ISSUEID = 0
+var EMAIL = 'conis.yi@gmail.com'
 var NOW = Number(new Date())
 
 function doAction(module, method, data, callback){
@@ -23,7 +24,8 @@ function doAction(module, method, data, callback){
           content = xhr.responseText
           break
         case 500:
-          break
+          console.log('发生500错误' + xhr.responseText)
+          return
       }
 
       callback(xhr.status, content, xhr)

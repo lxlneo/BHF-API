@@ -19,7 +19,9 @@ describe('测试用户模块', function(){
   it('注册一个新用户' + USERNAME, function(done){
     doAction(module, 'POST', {
         username: USERNAME,
-        password: PASSWORD
+        password: PASSWORD,
+        email: EMAIL,
+        git: EMAIL
       },function(status, content, xhr){
         if(status == 200){
           //检查返回id是否正确
