@@ -48,12 +48,24 @@ module.exports =
       method: post: 'uploadFile', delete: false, put: false
     },
     {
+      #获取一个项目top N的commits
+      path: 'project/:project_id(\\d+)/commit'
+      biz: 'commit'
+      method: post: false, delete: false, put: false
+    },
+    {
+      #获取某个issue下的所有commit
+      path: 'issue/:issue_id(\\d+)/commit'
+      biz: 'commit'
+      method: post: false, delete: false, put: false
+    }
+    {
       ##查看素材
       paths:{
         get: '/asset/:project_id(\\d+)/:filename'
       },
       biz: 'asset'
-      method: get: 'readFile', put: false, post: false, delete: false
+      method: get: 'rea,dFile', put: false, post: false, delete: false
     },{
       #issue相关
       path: 'project/:project_id(\\d+)/issue',
