@@ -24,7 +24,10 @@ class BaseEntity
 
     #如果存在
     options.beforeQuery?(exec)
-    exec.select(options.fields || '*')
+    if typeof options.fields is 'function'
+      options.fields exec
+    else
+      exec.select(options.fields || '*')
 
     sql = exec.toString()
     console.log sql
