@@ -96,6 +96,16 @@ class Commit extends _BaseEntity
       cb null, project_id
     )
 
+  #读取commit
+  find: (data, cb)->
+    limit = data.limit
+    delete data.limit
+    options =
+      beforeQuery: (query)->
+        query.limit limit || 20
+        query.orderBy 'timestamp', 'desc'
+
+    super data, options, cb
   ###
     #处理git commit
   ###
