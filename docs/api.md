@@ -100,7 +100,7 @@
 * Verb: `DELETE`
 
 ##更改状态
-* URL：`project/status/:project_id(\\d+)`
+* URL：`project/:project_id(\\d+)/status`
 * Verb: `PUT`
 * Data: 
 
@@ -111,7 +111,7 @@
 ##状态统计
 获取一个项目下所有issue的统计情况，列出各种状态以及此状态下的issue数量
 
-* URL: `project/status/:project_id(\\d+)`
+* URL: `project/:project_id(\\d+)/status`
 * Verb: `GET`
 * Returns
 
@@ -131,6 +131,51 @@
 		]
 
 
+##查看项目的讨论
+获取一个项目下所有的讨论
+* URL: `project/:project_id(\\d+)/discussion`
+* Verb: `GET`
+* Data: 
+
+		{
+			limit: 10,
+			offset: 10
+		}
+		
+* Returns
+
+		{
+		  "items": [
+		    {
+		      "id": 1,
+		      "title": "修改后的issue标题",
+		      "content": "详细的描述",
+		      "tag": "bug",
+		      "owner": "兰斌",
+		      "creator": 1,
+		      "status": "doing",
+		      "timestamp": 1395824836837,
+		      "project_id": 1,
+		      "finish_time": 0
+		    },
+		    {
+		      "id": 13,
+		      "title": "test",
+		      "content": "test",
+		      "tag": "project",
+		      "owner": null,
+		      "creator": null,
+		      "status": null,
+		      "timestamp": null,
+		      "project_id": 1,
+		      "finish_time": 0
+		    }
+		  ],
+		  "pagination": {
+		    "page_index": 1,
+		    "page_size": 10
+		  }
+		}
 
 #Commit For Project
 ##查询
@@ -335,81 +380,48 @@
 * URL：`issue/:issue_id(\\d+)/asset/(\\id)`
 * Verb: `DELETE`
 
-#Comment For issue
+#Comment
 ##创建
 在指定的issue下，创建comment
 
-* URL：`issue/:issue_id(\\d+)/comment`
+* URL：`project/:project_id/issue/:issue_id(\\d+)/comment`
 * Verb: `POST`
 * Data：
 
 		{
-		    //父级的comment_id，用于评论的回复。如果是最上级的comment，则parent_id为0
-		    "parent_id": 1
 			//评论的内容
-			"content": "请见#1 号issue",
+			"content": "对issue的评论",
 		}
 
 
 ##查询
 查询某个issue下的所有评论
 
-* URL：`issue/:issue_id(\\d+)/comment`
+* URL：`project/:project_id/issue/:issue_id(\\d+)/comment`
 * Verb: `GET`
 * Data：所有字段都支持等试查询，请参考**Project - 查询**一节
 * Retuns：
 
 		{
 		  "items": [
-		    {
-		      "id": 4,
-		      "target_id": "3",
-		      "parent_id": 0,
-		      "owner": null,
-		      "content": "请见#1 号issue",
-		      "timestamp": null
-		    },
-		    {
-		      "id": 5,
-		      "target_id": "3",
-		      "owner": null,
-		      "parent_id": 0,
-		      "content": "请见#1 号issue",
-		      "timestamp": 1395222914784
-		    }
-		  ],
-		  "pagination": {
-		    "page_index": 1,
-		    "page_size": 10
-		  }
-		}
-
-
-##查询单条评论
-查询某个issue下的评论以及回复
-
-* URL：`issue/:issue_id(\\d+)/comment/:id(\\d+)`
-* Verb: `GET`
-* Retuns：
-
-		{
-		  "items": [
-		    {
-		      "id": 4,
-		      "target_id": "3",
-		      "parent_id": 0,
-		      "owner": null,
-		      "content": "请见#1 号issue",
-		      "timestamp": null
-		    },
-		    {
-		      "id": 5,
-		      "issue_id": "3",
-		      "owner": null,
-		      "parent_id": 4,
-		      "content": "请见#1 号issue",
-		      "timestamp": 1395222914784
-		    }
+            {
+              "id": 1,
+              "project_id": 1,
+              "creator": 0,
+              "content": "测试",
+              "timestamp": null,
+              "issue_id": 1,
+              "realname": null
+            },
+            {
+              "id": 2,
+              "project_id": 1,
+              "creator": 0,
+              "content": "测试",
+              "timestamp": null,
+              "issue_id": 1,
+              "realname": null
+            }
 		  ],
 		  "pagination": {
 		    "page_index": 1,
@@ -425,14 +437,6 @@
 
 * URL：`issue/:issue_id(\\d+)/comment/:id(\\d+)`
 * Verb: `DELETE`
-
-#Comment For project
-请参考**Comment For issue**部分，不同的仅仅是url部分，不再赘述。相关的URL如下：
-
-* 创建：`project/:project_id(\\d+)/comment`
-* 查询：`project/:project_id(\\d+)/comment`
-* 查询单条评论：`project/:project_id(\\d+)/comment/:id(\\d+)`
-* 删除：`project/:project_id(\\d+)/comment/:id(\\d+)`
 
 #Asset
 ##创建
