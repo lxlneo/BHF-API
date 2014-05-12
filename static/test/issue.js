@@ -7,8 +7,8 @@ describe('测试issue模块', function(){
       "title": USERNAME + "的issue",
       "content": "详细的描述",
       "tag": "需求",
-      "owner": "兰斌",
-      "status": "进行中"
+      "owner": 1,
+      "status": "doing"
     }
 
     //必需在it下，因为在describe下不会被done中断
