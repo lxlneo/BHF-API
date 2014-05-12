@@ -5,6 +5,18 @@ class BaseEntity
     throw new Error('必需提供member参数') if not @member
     #
 
+  #获取第一行第一列的数据
+  scalar: (sql, cb)->
+    @entity().knex.raw(sql).then (result)->
+      cell = null
+      return cb err, cell if result[0].length is 0
+
+      for key, value of result[0][0]
+        cell = value
+        break
+
+      cb null, cell
+
   entity: ()->
     return _store.database()(this.schema.name)
 
