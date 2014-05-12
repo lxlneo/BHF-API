@@ -6,6 +6,7 @@ _BaseEntity = require './BaseEntity'
 _schema = require '../schema/commit.json'
 _async = require 'async'
 _Issue = require './issue'
+_ = require 'underscore'
 
 #统一处理log，便于可以统一禁掉
 _log = (log)->
@@ -98,14 +99,17 @@ class Commit extends _BaseEntity
 
   #读取commit
   find: (data, cb)->
-    limit = data.limit
-    delete data.limit
+    cond =
+      project_id : data.project_id
+      issue_id : data.issue_id
+
     options =
       beforeQuery: (query)->
-        query.limit limit || 20
+        query.limit data.limit || 20
+        query.offset data.offset || 0
         query.orderBy 'timestamp', 'desc'
 
-    super data, options, cb
+    super cond, options, cb
   ###
     #处理git commit
   ###
@@ -131,5 +135,16 @@ class Commit extends _BaseEntity
   #提交git commit
   gitCommit: (req, res, next)->
     @postCommits req.body, ()->res.end()
+
+  #获取issue的commit
+  getCommitForIssue: (req, res, next)->
+    cond = {}
+    _.extend cond, req.params
+    _.extend cond, req.query
+    @find cond, (err, result)->
+      data =
+        items: result
+      res.json data
+
 
 module.exports = Commit

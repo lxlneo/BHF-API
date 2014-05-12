@@ -50,6 +50,18 @@ module.exports =
       method: delete: false, put: false, get: false, post: 'gitCommit'
     },
     {
+      #查看某个项目下的所有commit
+      path: 'project/:project_id(\\d+)/commit'
+      biz: 'commit'
+      method: delete: false, put: false, post: false, get: 'getCommitForProject'
+    },
+    {
+    #查看某个issue下的所有commit
+      path: 'project/:project_id(\\d+)/issue/:issue_id(\\d+)/commit'
+      biz: 'commit'
+      method: delete: false, put: false, post: false, get: 'getCommitForIssue'
+    },
+    {
       #素材
       path: 'project/:project_id(\\d+)/asset'
       biz: 'asset'
