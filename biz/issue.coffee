@@ -29,6 +29,10 @@ class Issue extends _BaseEntity
     delete data.assets
 
     data.creator = this.member.member_id
+    #只允许指定的tag
+    #data.tag = '需求' if data.tag not in ['bug', '需求', '支持', '功能', 'project']
+    #只允许四种状态
+    data.status = 'new' if data.status not in ['new', 'doing', 'pause', 'done']
     self = this
     super data, (err, issue_id)->
       #如果是更新，则没有提交新的assets，则不更新assets。这里会有一个问题，如果客户端要删除所有的assets的关联时，会出问题，这个问题以后再处理。
@@ -67,7 +71,20 @@ class Issue extends _BaseEntity
         query.limit data.limit || 10
         query.offset data.offset || 0
         #只取未完成的
-        if(data.status is 'undone') then query.where('status', '<>', 'done')
+        if(data.status is 'undone')
+          query.where 'status', '<>', 'done'
+        else if data.status
+          query.where 'status', data.status
+
+        #指定标签
+        query.where 'tag', data.tag if data.tag
+        #指定完成时间段
+        query.where 'finish_time', '>=', data.beginTime if data.beginTime
+        query.where 'finish_time', '<=', data.endTime if data.endTime
+
+        #指定责任人
+        query.where 'owner', data.owner if data.owner
+
         query.orderBy 'timestamp', 'DESC'
 
     super cond, options, cb
