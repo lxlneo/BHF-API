@@ -177,59 +177,6 @@
 		  }
 		}
 
-#Commit For Project
-##查询
-获取某个Project下的commit Top N，如果没有指定Limit，则获取10条
-
-* URL：`project/:project_id(\\d+)/commit`
-* Verb: `GET`
-* Data：
-
-		{
-			//指定最大获取的数量
-			"limit": 20,
-		}
-* Returns
-
-		{
-		  "items": [
-		    {
-		      "id": 1,
-		      "project_id": 1,
-		      "issue_id": 0,
-		      "creator": 0,
-		      "message": "增加评论对project的支持",
-		      "sha": "ea7b0fae83e0e1b9d0dc7fdf2963f61ed4f0c0cb",
-		      "addition": null,
-		      "deletion": null,
-		      "timestamp": 1399536530517
-		    },
-		    {
-		      "id": 2,
-		      "project_id": 1,
-		      "issue_id": 0,
-		      "creator": 0,
-		      "message": "重载查询，支持查询project/issue的comment，并支持查询comment的回复",
-		      "sha": "483eba7583b8f0b2fd9a93309b3e6f524300a662",
-		      "addition": null,
-		      "deletion": null,
-		      "timestamp": 1399536530521
-		    }
-		  ],
-		  "pagination": {
-		    "page_index": 1,
-		    "page_size": 10
-		  }
-		}
-
-#新建
-不支持新建
-
-##更新
-不支持更新
-
-#删除
-不支持删除
 
 #Issue
 ##创建
@@ -316,49 +263,6 @@
 		{
 			status: "进行中"
 		}
-
-#Commit For Issue
-##查询
-获取某个Issue下的commit Top N，如果没有指定Limit，则获取10条
-
-* URL：`issue/:issue_id(\\d+)/commit`
-* Verb: `GET`
-* Data：
-
-		{
-			//指定最大获取的数量
-			"limit": 20,
-		}
-
-* Returns
-
-		{
-		  "items": [
-		    {
-		      "id": 24,
-		      "project_id": 1,
-		      "issue_id": 1,
-		      "creator": 1,
-		      "message": "#1#done 修复检查文件名出错的bug\n\n测试一下api",
-		      "sha": "7ee36e1c096c4b721ec564f16edd97bdb6c55b22",
-		      "addition": null,
-		      "deletion": null,
-		      "timestamp": 1399537811469
-		    }
-		  ],
-		  "pagination": {
-		    "page_index": 1,
-		    "page_size": 10
-		  }
-		}
-
-#新建
-不支持新建
-
-##更新
-不支持更新
-
-#删除
 不支持删除
 
 #Issue与Asset的关系
@@ -556,7 +460,7 @@
           }
         }
 
-#Git Commit
+#Commit
 
 ##接收Git Commit
 
@@ -589,4 +493,88 @@
 
 * `#(\\id)+` 关联到某个issue，例如`#12 某某问题`，这条将会关联到id为12的issue下
 * `#done`	完成某个issue，必需和issue id的宏一起才生效，如`#12 #done 某个问题终于完成了`
+
+##读取project下的commit
+获取某个Project下的commit Top N，如果没有指定Limit，则获取10条
+
+* URL：`project/:project_id(\\d+)/commit`
+* Verb: `GET`
+* Data：
+
+		{
+			//指定最大获取的数量
+			"limit": 20,
+			//要跳过的条数
+			"skip": 0
+		}
+* Returns
+
+		{
+		  "items": [
+		    {
+		      "id": 1,
+		      "project_id": 1,
+		      "issue_id": 0,
+		      "creator": 0,
+		      "message": "增加评论对project的支持",
+		      "sha": "ea7b0fae83e0e1b9d0dc7fdf2963f61ed4f0c0cb",
+		      "addition": null,
+		      "deletion": null,
+		      "timestamp": 1399536530517
+		    },
+		    {
+		      "id": 2,
+		      "project_id": 1,
+		      "issue_id": 0,
+		      "creator": 0,
+		      "message": "重载查询，支持查询project/issue的comment，并支持查询comment的回复",
+		      "sha": "483eba7583b8f0b2fd9a93309b3e6f524300a662",
+		      "addition": null,
+		      "deletion": null,
+		      "timestamp": 1399536530521
+		    }
+		  ],
+		  "pagination": {
+		    "page_index": 1,
+		    "page_size": 10
+		  }
+		}
+
+##读取issue
+##查询
+获取某个Issue下的commit Top N，如果没有指定Limit，则获取10条
+
+* URL：`issue/:issue_id(\\d+)/commit`
+* Verb: `GET`
+* Data：
+
+		{
+			//指定最大获取的数量
+			"limit": 20,
+		}
+
+* Returns
+
+		{
+		  "items": [
+		    {
+		      "id": 24,
+		      "project_id": 1,
+		      "issue_id": 1,
+		      "creator": 1,
+		      "message": "#1#done 修复检查文件名出错的bug\n\n测试一下api",
+		      "sha": "7ee36e1c096c4b721ec564f16edd97bdb6c55b22",
+		      "addition": null,
+		      "deletion": null,
+		      "timestamp": 1399537811469
+		    }
+		  ],
+		  "pagination": {
+		    "page_index": 1,
+		    "page_size": 10
+		  }
+		}
+
+
+
 

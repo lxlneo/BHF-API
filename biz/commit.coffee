@@ -146,7 +146,7 @@ class Commit extends _BaseEntity
     @find cond, (err, result)->
       data =
         items: result
-      res.json data
+      res.json result
 
 
 module.exports = Commit
