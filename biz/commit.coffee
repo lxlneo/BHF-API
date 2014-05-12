@@ -101,7 +101,9 @@ class Commit extends _BaseEntity
   find: (data, cb)->
     cond =
       project_id : data.project_id
-      issue_id : data.issue_id
+
+    #指定issue_id
+    cond.issue_id = data.issue_id if data.issue_id
 
     options =
       beforeQuery: (query)->
@@ -137,7 +139,7 @@ class Commit extends _BaseEntity
     @postCommits req.body, ()->res.end()
 
   #获取issue的commit
-  getCommitForIssue: (req, res, next)->
+  getCommit: (req, res, next)->
     cond = {}
     _.extend cond, req.params
     _.extend cond, req.query
