@@ -95,19 +95,37 @@ class Issue extends _BaseEntity
     2. 有comment的issue
   ###
   getProjectDiscussion: (req, res, next)->
+    self = @
     project_id = req.params.project_id
     limit = req.query.limit || 10
     offset = req.query.offset || 0
-
-    sql = "SELECT * FROM issue WHERE project_id = #{project_id}
+    sql = "SELECT :fields FROM issue WHERE project_id = #{project_id}
       AND (tag = 'project' OR id in
-      (SELECT issue_id FROM comment WHERE project_id = #{project_id}))
-      ORDER BY timestamp collate nocase DESC limit #{limit} offset #{offset}"
+      (SELECT issue_id FROM comment WHERE project_id = #{project_id}))"
 
-    this.entity().knex.raw(sql).then (result)->
+    queue = []
+
+    queue.push(
+      (done)->
+        self.scalar sql.replace(':fields', 'count(id)'), done
+    )
+
+    queue.push(
+      (done)->
+        sql += "ORDER BY timestamp collate nocase DESC limit #{limit} offset #{offset}"
+        sql = sql.replace ':fields', '*, (SELECT realname FROM member WHERE member.id = issue.creator) AS realname'
+        self.entity().knex.raw(sql).then (result)-> done null, result[0]
+    )
+
+    _async.series queue, (err, result)->
       data =
-        items: result[0]
+        items: result[1]
+        pagination:
+          limit: limit,
+          offset: offset
+          count: result[0]
       res.json data
+
     #http://127.0.0.1:14318/api/project/1/discussion
 
 module.exports = Issue
