@@ -1,11 +1,10 @@
 {
     "name": "comment",
     "fields": {
-        "type": "",
-        "target_id": "integer",
+        "project_id": "integer",
+        "issue_id": "integer",
         "creator": "integer",
         "content": "text",
-        "timestamp": "dateTime",
-        "parent_id": "integer"
+        "timestamp": "dateTime"
     }
 }

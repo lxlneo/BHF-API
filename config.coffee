@@ -28,6 +28,13 @@ module.exports =
   rootAPI: '/api/'
   routers: [
     {
+      #获取项目状态，及修改项目状态的路由
+      path: 'project/:project_id/status'
+      biz: 'project'
+      id: false
+      method: get: 'getStatus', delete: false, post: false, put: 'changeStatus'
+    },
+    {
       #项目相关的路由
       #路由地址
       path: 'project'
@@ -38,6 +45,7 @@ module.exports =
       #提交commit，用于git或svn提交commit时，自动获取commit并分析
       path: 'git/commit'
       biz: 'commit'
+      id: false
       anonymity: ['post']
       method: delete: false, put: false, get: false, post: 'gitCommit'
     },
@@ -65,7 +73,7 @@ module.exports =
         get: '/asset/:project_id(\\d+)/:filename'
       },
       biz: 'asset'
-      method: get: 'rea,dFile', put: false, post: false, delete: false
+      method: get: 'readFile', put: false, post: false, delete: false
     },{
       #issue相关
       path: 'project/:project_id(\\d+)/issue',
@@ -73,15 +81,14 @@ module.exports =
     },
     {
       #针对issue的评论
-      path: 'issue/:issue_id(\\d+)/comment'
+      path: 'project/:project_id(\\d+)/issue/:issue_id(\\d+)/comment'
       biz: 'comment'
       method: put: false
     },
     {
-      #针对project的评论
-      path: 'project/:project_id(\\d+)/comment'
-      biz: 'comment'
-      method: put: false
+      path: 'project/:project_id(\\d+)/discussion'
+      biz: 'issue'
+      method: put: false, post: false, delete: false, get: 'getProjectDiscussion'
     },
     {
       #建立或者解除asset与issue的关系
@@ -91,15 +98,10 @@ module.exports =
     },
     {
       #更改issue的状态，仅能更新
-      path: 'issue/status'
+      path: 'project/:project_id/issue/:issue_id/status'
       biz: 'issue'
+      id: false
       method: get: false, delete: false,  post: false, put: 'changeStatus'
-    },
-    {
-      #获取项目状态，及修改项目状态的路由
-      path: 'project/status'
-      biz: 'project'
-      method: get: 'getStatus', delete: false, post: false, put: 'changeStatus'
     },
     {
       paths: {

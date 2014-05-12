@@ -19,7 +19,7 @@ class Project extends _BaseEntity
 
   #获取项目的issue状态列表
   getStatus: (req, res, next)->
-    project_id = req.params.id
+    project_id = req.params.project_id
     return _common.response404(res) if not project_id
 
     sql = "select status, count(*) total from issue where project_id = #{project_id} group by status"
@@ -31,7 +31,7 @@ class Project extends _BaseEntity
 
   #改变project的状态
   changeStatus: (req, res, next)->
-    project_id = req.params.id
+    project_id = req.params.project_id
     status = req.body.status
 
     data = {

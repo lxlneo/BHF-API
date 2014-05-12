@@ -54,7 +54,8 @@ describe('测试issue模块', function(){
       status: '进行中'
     }
 
-    doAction('issue/status/' + ISSUEID, 'PUT', data, function(){
+    var url = generalURL + '/' + ISSUEID + '/status'
+    doAction(url, 'PUT', data, function(){
       doAction(generalURL + '/' + ISSUEID, 'GET', null, function(status, content){
         expect(content.status).to.be(data.status)
         done()

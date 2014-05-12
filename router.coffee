@@ -21,8 +21,9 @@ getPaths = (router)->
   _verbs.forEach (method)->
     #如果有指定paths，优先取指定method的path，如果没有取到，则取paths.all
     #假如在paths中没有取到，则拼装path
+    puffix = if router.id is false then '' else pathPuffix[method]
     path = (router.paths && (router.paths[method] || router.paths.all)) ||
-      "#{_config.rootAPI}#{router.path}#{pathPuffix[method]}"
+      "#{_config.rootAPI}#{router.path}#{puffix}"
     #替换掉路径中的变量
     path = path.replace('#{rootAPI}', _config.rootAPI)
     paths[method] = path    #"/api/#{path}"

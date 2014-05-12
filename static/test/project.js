@@ -61,7 +61,7 @@ describe('测试项目模块', function(){
 
   it('更改项目状态', function(done){
     var projectStatus = '进行中'
-    doAction(module + '/status/' + PROJECTID, 'PUT', {status: projectStatus}, function(status){
+    doAction(module + '/' + PROJECTID + '/status', 'PUT', {status: projectStatus}, function(status){
       doAction(specProjUrl, 'GET', null, function(status, content){
         expect(content.status).to.be(projectStatus)
         done()
