@@ -40,7 +40,7 @@ class Issue extends _BaseEntity
 
   #改变issue的状态
   changeStatus: (req, res, next)->
-    issue_id = req.params.id
+    issue_id = req.params.issue_id
     status = req.body.status
 
     data = {
@@ -49,7 +49,7 @@ class Issue extends _BaseEntity
     }
 
     #修改状态
-    super data, (err)->
+    @save data, (err)->
       res.end()
 
   find: (data, cb)->
@@ -60,7 +60,9 @@ class Issue extends _BaseEntity
 
     #选项
     options =
-    #在查询之前，对query再处理
+      fields: (query)->
+        query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = issue.creator) AS realname')
+      #在查询之前，对query再处理
       beforeQuery: (query)->
         query.limit data.limit || 10
         query.offset data.offset || 0
@@ -69,5 +71,26 @@ class Issue extends _BaseEntity
         query.orderBy 'timestamp', 'DESC'
 
     super cond, options, cb
+
+  ###
+    获取项目的讨论
+    1. tag为project
+    2. 有comment的issue
+  ###
+  getProjectDiscussion: (req, res, next)->
+    project_id = req.params.project_id
+    limit = req.query.limit || 10
+    offset = req.query.offset || 0
+
+    sql = "SELECT * FROM issue WHERE project_id = #{project_id}
+      AND (tag = 'project' OR id in
+      (SELECT issue_id FROM comment WHERE project_id = #{project_id}))
+      ORDER BY timestamp collate nocase DESC limit #{limit} offset #{offset}"
+
+    this.entity().knex.raw(sql).then (result)->
+      data =
+        items: result[0]
+      res.json data
+    #http://127.0.0.1:14318/api/project/1/discussion
 
 module.exports = Issue
