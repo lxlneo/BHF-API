@@ -256,7 +256,7 @@
 
 ##更改状态
 
-* URL：`issue/status/:id(\\d+)`
+* URL：`project/:project_id(\\d+)/issue/:issue_id(\\d+)/status`
 * Verb: `PUT`
 * Data: 
 

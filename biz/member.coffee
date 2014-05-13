@@ -88,10 +88,7 @@ class Member extends _BaseEntity
 
   #获取用户列表
   allMember: (req, res, next)->
-    options =
-      fields: ['username', 'realname']
-
-    this.find null, options, (err, result)->
+    @find null, (err, result)->
       res.json result
 
 

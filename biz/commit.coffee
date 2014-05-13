@@ -22,9 +22,28 @@ class Commit extends _BaseEntity
     #提取issue_id
     issue_id = if message.match /#(\d+)/i then RegExp.$1 else 0
     #提取done标签是否存在
-    done = /#(done|ok)/i.test(message)
+    isDone = /#(done|ok)/i.test(message)
+    #提取new标签
+    isNew = /#new/i.test(message)
+    #提取doing标签
+    isDoing = /#doing/i.test(message)
+    _log "issue id -> #{issue_id}, done: #{isDone}, new: #{isNew}, doing: #{isDoing}"
 
-    _log "issue id -> #{issue_id}, done: #{done}"
+    queue = []
+    queue.push(
+      (done)->
+        done null if not isNew
+        #如果包含isNew，则创建一个issue
+        #替换掉message中的标签
+        data =
+          title: message.replace /#(new|doing|done|ok)/ig, ''
+          status: if isDoing then 'doing' else 'new'
+          member_id: member_id
+          owner: member_id
+          timestamp: new Date()
+          tag: ''
+
+    )
     #如果没有issue_id或没有完成，则不做任何处理
     return cb null, issue_id if not done
 

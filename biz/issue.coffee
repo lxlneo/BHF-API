@@ -75,6 +75,7 @@ class Issue extends _BaseEntity
         #只取未完成的
         if(data.status is 'undone')
           query.where 'status', '<>', 'done'
+          query.where 'status', '<>', 'trash'
         else if data.status
           query.where 'status', data.status
 
