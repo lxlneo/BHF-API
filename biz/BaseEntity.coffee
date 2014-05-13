@@ -24,7 +24,7 @@ class BaseEntity
   #简单的搜索
   find: (condition, options, cb)->
     if typeof options is 'function'
-      callback = options
+      cb = options
       options = {}
 
     condition = condition || {}
@@ -37,8 +37,8 @@ class BaseEntity
     #查询总记录数
     queue.push(
       (done)->
-        #如果有匹配id，不需要分页
-        return done null, null if condition.id
+        #不需要分页，因为没有指定pagination的参数，或者已经指定id（单条数据）
+        return done null, null if condition.id or not condition.pagination
 
         exec = self.entity().where condition
         options.beforeQuery?(exec, true)
