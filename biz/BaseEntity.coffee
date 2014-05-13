@@ -1,4 +1,5 @@
 _store = require './store'
+_async = require 'async'
 
 class BaseEntity
   constructor: (@member)->
@@ -21,7 +22,7 @@ class BaseEntity
     return _store.database()(this.schema.name)
 
   #简单的搜索
-  find: (condition, options, callback)->
+  find: (condition, options, cb)->
     if typeof options is 'function'
       callback = options
       options = {}
@@ -31,33 +32,64 @@ class BaseEntity
     for key, value of condition
       delete condition[key] if value is undefined
 
-    exec = this.entity()
-    .where condition
+    queue = []
+    self = @
+    #查询总记录数
+    queue.push(
+      (done)->
+        #如果有匹配id，不需要分页
+        return done null, null if condition.id
 
-    #如果存在
-    options.beforeQuery?(exec)
-    if typeof options.fields is 'function'
-      options.fields exec
-    else
-      exec.select(options.fields || '*')
+        exec = self.entity().where condition
+        options.beforeQuery?(exec, true)
+        exec.select exec.knex.raw('count(*)')
+        console.log exec.toString()
 
-    sql = exec.toString()
-    console.log sql
-
-    exec.then((items)->
-      #如果存在id，则表示查找单条数据
-      if condition.id
-        result = if items.length == 0 then null else items[0]
-      else
-        result =
-          items: items
-          pagination:
-            page_index: 1,
-            page_size: 10
-
-      callback null, result
+        #汇总统计
+        self.scalar exec.toString(), (err, count)-> done null, count
     )
-    #console.log sql
+
+    queue.push(
+      (count, done)->
+        exec = self.entity().where condition
+
+        #如果存在
+        options.beforeQuery?(exec)
+        if typeof options.fields is 'function'
+          options.fields exec
+        else
+          exec.select(options.fields || '*')
+
+        #加入排序
+        exec.orderBy key, value for key, value of options.orderBy || {}
+
+        #如果有使用分页
+        page = options.pagination
+        if page
+          #整理数据，防止提交的数据不对
+          page.limit = page.limit || 10
+          page.offset = page.offset || 0
+          page.count = count
+
+          exec.limit page.limit
+          exec.offset page.offset
+
+        sql = exec.toString()
+        console.log sql
+
+        exec.then (items)->
+          #如果存在id，则表示查找单条数据
+          if condition.id
+            result = if items.length == 0 then null else items[0]
+          else
+            result =
+              items: items
+              pagination: page
+          done null, result
+    )
+
+
+    _async.waterfall queue, cb
 
   #简单的存储
   save: (data, callback)->
