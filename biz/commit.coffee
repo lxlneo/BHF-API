@@ -106,10 +106,10 @@ class Commit extends _BaseEntity
     cond.issue_id = data.issue_id if data.issue_id
 
     options =
-      beforeQuery: (query)->
-        query.limit data.limit || 20
-        query.offset data.offset || 0
-        query.orderBy 'timestamp', 'desc'
+      orderBy: timestamp: 'desc'
+      pagination: limit: data.limit || 20, offset: data.offset || 0
+      beforeQuery: (query, isCount)->
+        #query.orderBy 'timestamp', 'desc' if not isCount
 
     super cond, options, cb
   ###
