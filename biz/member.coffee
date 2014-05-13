@@ -23,20 +23,24 @@ class Member extends _BaseEntity
 
   #登录
   signIn: (req, res, next)->
-    username = req.body.username
-    password = req.body.password
-    data = username: username
-
     errMessage = "用户名或者密码错误"
-    this.find data, (err, result)->
+    account = req.body.account
+    password = req.body.password
+    return _common.response406 res, errMessage if not account or not password
+
+    options =
+      beforeQuery: (query)->
+        query.andWhere('email', account).orWhere('username', account)
+
+
+    this.find null, options, (err, result)->
+      return _common.response500 res, '糟糕，服务器暴病身亡了' if err
       #没有这个用户名
-      if result.items.length == 0
-        return _common.response406 res, errMessage
+      return _common.response406 res, errMessage if result.items.length == 0
 
       #检查密码是否匹配
       row = result.items[0]
-      if row.password isnt _common.md5 password
-        return _common.response406 res, errMessage
+      return _common.response406 res, errMessage if row.password isnt _common.md5(password)
 
       #写入session
       req.session.member_id = row.id
