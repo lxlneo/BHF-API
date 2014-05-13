@@ -4,7 +4,7 @@
 _store = require('./store')
 _BaseEntity = require './BaseEntity'
 _util = require 'util'
-_schema = require '../schema/project.json'
+_schema = require('../schema/project').schema
 _common = require '../common'
 
 #定义一个Project类

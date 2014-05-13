@@ -3,7 +3,7 @@
 ###
 _store = require('./store')
 _BaseEntity = require './BaseEntity'
-_schema = require '../schema/comment.json'
+_schema = require('../schema/comment').schema
 
 #定义一个Project类
 class Comment extends _BaseEntity

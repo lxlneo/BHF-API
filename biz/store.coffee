@@ -22,7 +22,13 @@ createField = (table, schema)->
   table.increments('id').primary()
   for key, property of schema.fields
     property = property || "string"
-    table[property] key
+    if typeof property is 'string'
+      table[property] key
+    else
+      #处理对象字面量
+      field = table[property.type || 'string'] key
+      field.index() if property.index
+
 
 #创建一个表
 createTable = (schema, callback)->
@@ -47,7 +53,7 @@ init = ()->
   #建表
   dir = '../schema'
   #允许的扩展名
-  allowExt = '.json'
+  allowExt = '.coffee'
 
   tables = _fs.readdirSync _path.join(__dirname, dir)
   _async.eachSeries(tables, ((item, callback)->
@@ -55,7 +61,7 @@ init = ()->
     return callback null if _path.extname(item) isnt allowExt
 
     #获取schema
-    schema = require "#{dir}/#{item}"
+    schema = require("#{dir}/#{item}").schema
     console.log "创建表：#{item}"
     #建表
     createTable schema, callback

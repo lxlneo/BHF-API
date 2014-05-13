@@ -4,7 +4,7 @@
 
 _store = require('./store')
 _BaseEntity = require './BaseEntity'
-_schema = require '../schema/asset_issue_relation.json'
+_schema = require('../schema/asset_issue_relation').schema
 _async = require 'async'
 
 #定义一个Project类

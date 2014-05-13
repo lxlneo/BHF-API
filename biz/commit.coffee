@@ -3,7 +3,7 @@
 ###
 _store = require('./store')
 _BaseEntity = require './BaseEntity'
-_schema = require '../schema/commit.json'
+_schema = require('../schema/commit').schema
 _async = require 'async'
 _Issue = require './issue'
 _ = require 'underscore'

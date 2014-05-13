@@ -6,7 +6,7 @@ _store = require('./store')
 _util = require 'util'
 _BaseEntity = require './BaseEntity'
 _common = require '../common'
-_schema = require '../schema/member.json'
+_schema = require('../schema/member').schema
 
 class Member extends _BaseEntity
   constructor: ()->

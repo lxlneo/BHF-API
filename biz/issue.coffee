@@ -3,7 +3,7 @@
 ###
 _store = require('./store')
 _BaseEntity = require './BaseEntity'
-_schema = require '../schema/issue.json'
+_schema = require('../schema/issue').schema
 _AssetIssueRelation = require './asset_issue_relation'
 _async = require 'async'
 

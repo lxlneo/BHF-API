@@ -3,7 +3,7 @@
 ###
 
 _store = require('./store')
-_schema = require '../schema/asset.json'
+_schema = require('../schema/asset').schema
 _BaseEntity = require './BaseEntity'
 _fs = require 'fs'
 _commom = require '../common'
