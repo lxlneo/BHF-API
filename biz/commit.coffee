@@ -108,7 +108,7 @@ class Commit extends _BaseEntity
     options =
       orderBy: timestamp: 'desc'
       pagination: limit: data.limit || 20, offset: data.offset || 0
-      beforeQuery: (query, isCount)->
+      #beforeQuery: (query, isCount)->
         #query.orderBy 'timestamp', 'desc' if not isCount
 
     super cond, options, cb
@@ -143,9 +143,8 @@ class Commit extends _BaseEntity
     cond = {}
     _.extend cond, req.params
     _.extend cond, req.query
+
     @find cond, (err, result)->
-      data =
-        items: result
       res.json result
 
 

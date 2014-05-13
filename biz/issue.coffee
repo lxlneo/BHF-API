@@ -64,6 +64,8 @@ class Issue extends _BaseEntity
 
     #选项
     options =
+      pagination: limit: data.limit, offset: data.offset
+      orderBy: timestamp: 'DESC'
       fields: (query)->
         query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = issue.creator) AS realname')
       #在查询之前，对query再处理
@@ -85,7 +87,6 @@ class Issue extends _BaseEntity
         #指定责任人
         query.where 'owner', data.owner if data.owner
 
-        query.orderBy 'timestamp', 'DESC'
 
     super cond, options, cb
 

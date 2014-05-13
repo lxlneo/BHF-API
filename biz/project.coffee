@@ -13,6 +13,16 @@ class Project extends _BaseEntity
     @schema = _schema
     super
 
+  find: (data, cb)->
+    cond =
+      id: data.id
+
+    options =
+      pagination: limit: data.limit, offset: data.offset
+      orderBy: timestamp: 'DESC'
+
+    super cond, options, cb
+
   save: (data, callback)->
     data.creator = this.member.member_id
     super
