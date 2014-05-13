@@ -67,7 +67,7 @@ class Issue extends _BaseEntity
       pagination: limit: data.limit, offset: data.offset
       orderBy: timestamp: 'DESC'
       fields: (query)->
-        query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = issue.creator) AS realname')
+        query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = issue.owner) AS realname')
       #在查询之前，对query再处理
       beforeQuery: (query)->
         query.limit data.limit || 10

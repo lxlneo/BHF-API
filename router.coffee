@@ -100,7 +100,7 @@ response404 = (req, res, next)->
 requestPermission = (method, router, req, res)->
   #非产品环境下不检查权限
   #不要加这行，如果使用这行，用户退出后还能登录
-  return true if process.env.NODE_ENV isnt 'production'
+  #return true if process.env.NODE_ENV isnt 'production'
 
   #检查是否忽略权限检查
   return true if  _.indexOf(router.anonymity || [], method) >= 0

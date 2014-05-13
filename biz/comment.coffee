@@ -23,7 +23,7 @@ class Comment extends _BaseEntity
 
     #选项
     options =
-      orderBy: timestamp: 'desc'
+      orderBy: timestamp: 'ASC'
       fields: (query)->
         query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = comment.creator) AS realname')
       pagination: limit: data.limit, offset: data.offset
