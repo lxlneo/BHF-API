@@ -100,7 +100,7 @@ response404 = (req, res, next)->
 requestPermission = (method, router, req, res)->
   #非产品环境下不检查权限
   #不要加这行，如果使用这行，用户退出后还能登录
-  #return true if process.env.NODE_ENV isnt 'production'
+  return true if process.env.NODE_ENV isnt 'production'
 
   #检查是否忽略权限检查
   return true if  _.indexOf(router.anonymity || [], method) >= 0
@@ -109,6 +109,14 @@ requestPermission = (method, router, req, res)->
   return req.session.member_id || _common.response401(res)
 
 module.exports = (app)->
+  ###
+  #测试环境下，在所有路由之前，设置一个session id为1
+  if process.env.NODE_ENV is 'development'
+    app.all '*', (req, res, next) ->
+      req.session.member_id = 1
+      next()
+  ###
+
   #首页
   app.get '/', (req, res, next)->
     res.sendfile 'static/index.html'
