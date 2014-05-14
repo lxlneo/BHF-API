@@ -7,6 +7,7 @@ _schema = require('../schema/commit').schema
 _async = require 'async'
 _Issue = require './issue'
 _ = require 'underscore'
+_common = require '../common'
 
 #统一处理log，便于可以统一禁掉
 _log = (log)->
@@ -18,38 +19,64 @@ class Commit extends _BaseEntity
     super
 
   #分析commit message中的标签，来关联对应的issue
-  analysisCommitMessage: (message, member_id, cb)->
+  analysisCommitMessage: (project_id, message, member_id, cb)->
+    self = this
     #提取issue_id
     issue_id = if message.match /#(\d+)/i then RegExp.$1 else 0
     #提取done标签是否存在
     isDone = /#(done|ok)/i.test(message)
-    #提取new标签
-    isNew = /#new/i.test(message)
+    #提取创建标签
+    isCreate = /#create/i.test(message)
     #提取doing标签
     isDoing = /#doing/i.test(message)
-    _log "issue id -> #{issue_id}, done: #{isDone}, new: #{isNew}, doing: #{isDoing}"
+    _log "issue id -> #{issue_id}, done: #{isDone}, new: #{isCreate}, doing: #{isDoing}"
 
     queue = []
     queue.push(
       (done)->
-        done null if not isNew
-        #如果包含isNew，则创建一个issue
+        #必须满足条件
+        done null, 0 if not (isCreate and project_id and member_id)
+        #如果包含isCreate，则创建一个issue
+        #提取标签
+        tag =  if message.match /@(.+)\s/ then RegExp.$1 else 'new'
+        tag = _common.checkTag tag
         #替换掉message中的标签
         data =
-          title: message.replace /#(new|doing|done|ok)/ig, ''
+          title: message.replace(/#(new|doing|done|ok)/ig, '').replace(/@(.+)\s/, '')
           status: if isDoing then 'doing' else 'new'
           member_id: member_id
           owner: member_id
           timestamp: new Date()
-          tag: ''
+          tag: tag
+          project_id: project_id
 
+        self.save data, (err, id)->
+          _log "创建新的issue，id -> #{id}"
+          issue_id = id
+          done err
     )
-    #如果没有issue_id或没有完成，则不做任何处理
-    return cb null, issue_id if not done
 
-    #如果有done标签，则完成这个issue
-    issue = new _Issue(@member)
-    issue.finishedIssue issue_id, ()-> cb null, issue_id
+    #处理doing的状态
+    queue.push(
+      (done)->
+        #没有获得issue id，不处理
+        return cb null if not (issue_id and isDoing and member_id)
+        issue = new _Issue(member_id: member_id)
+        data = id: issue_id, status: 'doing'
+        issue.save data, done
+    )
+
+    #处理done
+    queue.push(
+      (done)->
+        return cb null if not (issue_id and isDone and member_id)
+        #如果有done标签，则完成这个issue
+        issue = new _Issue(@member)
+        issue.finishedIssue issue_id, ()-> cb null, issue_id
+    )
+
+    _async.waterfall queue, cb
+
 
   #根据git用户名查找对应的用户id
   findMemberWithGitUser: (gitUser, cb)->
@@ -74,7 +101,7 @@ class Commit extends _BaseEntity
       (member_id, done)->
         _log "#{commit.author.email}->#{member_id}"
         #分析message中的信息，例如关于到issue，或者完成某个issue等
-        self.analysisCommitMessage commit.message, member_id, (err, issue_id)->
+        self.analysisCommitMessage projectId, commit.message, member_id, (err, issue_id)->
           _log "#{commit.message}"
           done err, member_id, issue_id
     )
