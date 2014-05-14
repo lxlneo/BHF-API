@@ -136,12 +136,11 @@ class Commit extends _BaseEntity
       (-> index < commits.length)
       ((done)->
         commit = commits[index++]
-        cond = sha: commit.sha
+        cond = sha: commit.id
 
-        console.log commit
         self.find cond, (err, result)->
           if result.items.length > 0
-            _log "Commit has already exists -> #{commit.sha}"
+            _log "Commit has already exists -> #{commit.id}"
             done null
           else
             self.saveCommit project_id, commit, done
