@@ -4,7 +4,12 @@ _async = require 'async'
 class BaseEntity
   constructor: (@member)->
     throw new Error('必需提供member参数') if not @member
-    #
+
+  #统计汇总
+  count: (condition, cb)->
+    entity = @entity()
+    query = entity.where(condition).select(entity.knex.raw('count(*)'))
+    @scalar query.toString(), cb
 
   #获取第一行第一列的数据
   scalar: (sql, cb)->
