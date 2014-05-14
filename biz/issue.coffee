@@ -6,6 +6,7 @@ _BaseEntity = require './BaseEntity'
 _schema = require('../schema/issue').schema
 _AssetIssueRelation = require './asset_issue_relation'
 _async = require 'async'
+_common = require '../common'
 
 #定义一个Project类
 class Issue extends _BaseEntity
@@ -30,9 +31,9 @@ class Issue extends _BaseEntity
 
     data.creator = this.member.member_id
     #只允许指定的tag
-    #data.tag = '需求' if data.tag not in ['bug', '需求', '支持', '功能', 'project']
+    data.tag = _common.checkTag data.tag if data.tag
     #只允许四种状态
-    data.status = 'new' if data.status not in ['new', 'doing', 'pause', 'done']
+    data.status = _common.checkStatus data.status if data.status
     self = this
     super data, (err, issue_id)->
       #如果是更新，则没有提交新的assets，则不更新assets。这里会有一个问题，如果客户端要删除所有的assets的关联时，会出问题，这个问题以后再处理。
@@ -52,9 +53,9 @@ class Issue extends _BaseEntity
       status: status
     }
 
+
     #修改状态
-    @save data, (err)->
-      res.end()
+    @save data, (err)-> res.end()
 
   find: (data, cb)->
     cond = {}
