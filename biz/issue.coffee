@@ -58,6 +58,7 @@ class Issue extends _BaseEntity
     @save data, (err)-> res.end()
 
   find: (data, cb)->
+    self = @
     cond = {}
     cond.tag = data.tag
     cond.id = data.id
@@ -83,14 +84,32 @@ class Issue extends _BaseEntity
         #指定标签
         query.where 'tag', data.tag if data.tag
         #指定完成时间段
-        query.where 'finish_time', '>=', data.beginTime if data.beginTime
-        query.where 'finish_time', '<=', data.endTime if data.endTime
+        #query.where 'finish_time', '>=', data.beginTime if data.beginTime
+        #query.where 'finish_time', '<=', data.endTime if data.endTime
+        self.queryTimeRange query, 'finish_time', data.finish_time
+        self.queryTimeRange query, 'timestamp', data.timestamp
 
         #指定责任人
         query.where 'owner', data.owner if data.owner
 
+        query.orderBy 'status', 'desc'
+        query.orderBy 'timestamp', 'desc'
+
 
     super cond, options, cb
+
+  #build时间范围查询条件
+  queryTimeRange: (query, field, param)->
+    return if not param
+    list = param.split('|')
+    #包括开始时间
+    if list[0]
+      start = new Date list[0]
+      query.where field, '>=', start
+
+    if list[1]
+      end = new Date list[0]
+      query.where field, '<=', end
 
   ###
     获取项目的讨论

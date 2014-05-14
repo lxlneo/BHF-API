@@ -210,7 +210,16 @@
 
 * URL：`project/:project_id(\\d+)/issue/(\\d+)?`
 * Verb: `GET`
-* Data：所有字段都支持等试查询，请参考**Project - 查询**一节
+* Data：
+
+		{
+			//如果指定为undone，则查未完成的(new/doing/pause)，否则查指定状态
+			"status": "undone",
+			//指定标签
+			"tag": "bug",
+			//开始时间，注意转成Number
+			"beginTime": Number(new Date())
+		}
 * Retuns：
 
 		{
@@ -270,18 +279,18 @@
 ##查询
 查询某个issue下所有在使用的素材
 
-* URL：`issue/:issue_id(\\d+)/asset`
+* URL：`project/:project_id/issue/:issue_id(\\d+)/assets`
 * Verb: `GET`
 
 ##建立关系
 建立issue与asset之间的关系
 
-* URL：`issue/:issue_id(\\d+)/asset`
+* URL：`project/:project_id/issue/:issue_id(\\d+)/asset`
 * Verb: `POST`
 
 ##解除关系
 
-* URL：`issue/:issue_id(\\d+)/asset/(\\id)`
+* URL：`project/:project_id/issue/:issue_id(\\d+)/asset/(\\id)`
 * Verb: `DELETE`
 
 #Comment
@@ -339,7 +348,7 @@
 
 ##删除
 
-* URL：`issue/:issue_id(\\d+)/comment/:id(\\d+)`
+* URL：`project/:project_id/issue/:issue_id(\\d+)/comment/:id(\\d+)`
 * Verb: `DELETE`
 
 #Asset
@@ -380,7 +389,7 @@
 以文件的方式查看素材，注意，此路径不包含`/api/`这个目录
 通常这个地址是由`project/:project_id(\\d+)/asset`列表中的`items[0].url`获得的
 
-* URL：`/asset/:project_id(\\d+)/:filename`
+* URL：`/project/:project_id(\\d+)/assets/:filename`
 * Verb: `GET`
 * Data：
 
@@ -544,7 +553,7 @@
 ##查询
 获取某个Issue下的commit Top N，如果没有指定Limit，则获取10条
 
-* URL：`issue/:issue_id(\\d+)/commit`
+* URL：`project/:project_id/issue/:issue_id(\\d+)/commit`
 * Verb: `GET`
 * Data：
 
@@ -577,4 +586,21 @@
 
 
 
+#Report
+##查询issue
+查义issue的详细报表
 
+* URL：`project/:project_id/report/issue`
+* Verb: `GET`
+* Data：
+
+		{
+			//用户的id
+			"member_id": 1
+			//开始时间
+			"start_time": new Date(),
+			//结束时间
+			"end_time": new Date()
+		}
+
+* Returns
