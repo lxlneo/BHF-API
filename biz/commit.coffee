@@ -21,6 +21,7 @@ class Commit extends _BaseEntity
   #分析commit message中的标签，来关联对应的issue
   analysisCommitMessage: (project_id, message, member_id, cb)->
     self = this
+    member = member_id: member_id
     #提取issue_id
     issue_id = if message.match /#(\d+)/i then RegExp.$1 else 0
     #提取done标签是否存在
@@ -35,22 +36,25 @@ class Commit extends _BaseEntity
     queue.push(
       (done)->
         #必须满足条件
-        done null, 0 if not (isCreate and project_id and member_id)
+        return done null if not (isCreate and project_id and member_id)
         #如果包含isCreate，则创建一个issue
         #提取标签
         tag =  if message.match /@(.+)\s/ then RegExp.$1 else 'new'
         tag = _common.checkTag tag
         #替换掉message中的标签
         data =
-          title: message.replace(/#(new|doing|done|ok)/ig, '').replace(/@(.+)\s/, '')
+          title: message.replace(/#(new|doing|done|ok|create|id|\d+)/ig, '').replace(/@(.+)\s/, '')
           status: if isDoing then 'doing' else 'new'
-          member_id: member_id
+          creator: member_id
           owner: member_id
           timestamp: new Date()
           tag: tag
           project_id: project_id
 
-        self.save data, (err, id)->
+
+        console.log data
+        issue = new _Issue member
+        issue.save data, (err, id)->
           _log "创建新的issue，id -> #{id}"
           issue_id = id
           done err
@@ -60,22 +64,24 @@ class Commit extends _BaseEntity
     queue.push(
       (done)->
         #没有获得issue id，不处理
-        return cb null if not (issue_id and isDoing and member_id)
-        issue = new _Issue(member_id: member_id)
+        return done null if not (issue_id and isDoing and member_id)
+        issue = new _Issue member
         data = id: issue_id, status: 'doing'
-        issue.save data, done
+        issue.save data, ()-> done null
     )
 
     #处理done
     queue.push(
       (done)->
-        return cb null if not (issue_id and isDone and member_id)
+        return done null if not (issue_id and isDone and member_id)
         #如果有done标签，则完成这个issue
-        issue = new _Issue(@member)
-        issue.finishedIssue issue_id, ()-> cb null, issue_id
+        issue = new _Issue member
+        issue.finishedIssue issue_id, done
     )
 
-    _async.waterfall queue, cb
+    _async.waterfall queue, (err)->
+      console.log '新的哈哈哈id', issue_id
+      cb err, issue_id
 
 
   #根据git用户名查找对应的用户id
@@ -128,7 +134,18 @@ class Commit extends _BaseEntity
     index = 0
     _async.whilst(
       (-> index < commits.length)
-      ((done)-> self.saveCommit(project_id, commits[index++], done))
+      ((done)->
+        commit = commits[index++]
+        cond = sha: commit.sha
+
+        console.log commit
+        self.find cond, (err, result)->
+          if result.items.length > 0
+            _log "Commit has already exists -> #{commit.sha}"
+            done null
+          else
+            self.saveCommit project_id, commit, done
+      )
       cb
     )
 
