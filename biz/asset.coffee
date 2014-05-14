@@ -18,12 +18,18 @@ class Asset extends _BaseEntity
     @schema = _schema
     super
   #重载find
-  find: (condition, callback)->
-    super condition, (err, result)->
+  find: (data, cb)->
+    cond =
+      project_id: data.project_id
+
+    options =
+      pagination: limit: data.limit, offset: data.offset
+
+    super cond, options, (err, result)->
       _.each result.items, (item)->
         item.url = "/assets/#{item.project_id}/#{item.file_name}"
 
-      callback(err, result)
+      cb err, result
 
   #读取文件
   readFile: (req, res, next)->
