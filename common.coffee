@@ -35,3 +35,11 @@ exports.response404 = (res)->
 #检查文件夹是否存在，如果不存在，则创建
 exports.dirPromise = (dir)->
   _fs.mkdirSync dir if not _fs.existsSync dir
+
+#检查tag
+exports.checkTag = (tag)->
+  if tag in ['bug', '需求', '支持', '功能'] then tag else '需求'
+
+#状态只能是这几种
+exports.checkStatus = (status)->
+  if status in ['new', 'doing', 'done', 'pause', 'trash'] then status else 'new'
