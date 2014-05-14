@@ -38,7 +38,7 @@ class BaseEntity
     queue.push(
       (done)->
         #不需要分页，因为没有指定pagination的参数，或者已经指定id（单条数据）
-        return done null, null if condition.id or not condition.pagination
+        return done null, null if condition.id or not options.pagination
 
         exec = self.entity().where condition
         options.beforeQuery?(exec, true)
@@ -112,10 +112,16 @@ class BaseEntity
 
   #简单的删除功能
   remove: (data, callback)->
-    this.entity()
-    .where('id', data.id)
-    .del()
-    .then (total)->
+    exec = this.entity().where('id', data.id).del()
+    console.log exec.toString()
+    exec.then (total)->
+        console.log '删除', total
         callback null, total
+
+  #根据schema转换数据为合适的格式
+  parse: (data)->
+    result = {}
+    #for key, value of @schema.fields
+
 
 module.exports =  BaseEntity

@@ -34,7 +34,7 @@ _app.configure ()->
   _app.use(_express.cookieParser())
   _app.use(_express.session(secret: 'hunantv.com', cookie:  maxAge: 1 * 60 * 60 * 1000 ))
   _app.use(_express.static(__dirname + '/static'))
-  _app.set 'port', process.env.PORT || 14318
+  _app.set 'port', process.env.PORT || 8000
 
 _router(_app)
 
