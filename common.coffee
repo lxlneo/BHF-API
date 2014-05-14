@@ -38,7 +38,7 @@ exports.dirPromise = (dir)->
 
 #检查tag
 exports.checkTag = (tag)->
-  if tag in ['bug', '需求', '支持', '功能'] then tag else '需求'
+  if tag in ['bug', '需求', '支持', '功能', 'project'] then tag else '需求'
 
 #状态只能是这几种
 exports.checkStatus = (status)->
