@@ -35,13 +35,13 @@ class Asset extends _BaseEntity
   readFile: (req, res, next)->
     project_id = req.params.project_id
     filename = req.params.filename
-    fullpath = _path.join _commom.rootPath, "asset", project_id, filename
+    fullpath = _path.join _commom.rootPath, "assets", project_id, filename
     res.sendfile fullpath
 
   #处理上传文件
   uploadFile: (req, res, next)->
     project_id = req.params.project_id
-    asset = req.files.asset
+    asset = req.files.assets
 
     #复制文件到新的目录
     filename = this.saveAsset asset.path, project_id
