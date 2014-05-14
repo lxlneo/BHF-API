@@ -23,12 +23,12 @@ class Commit extends _BaseEntity
     self = this
     member = member_id: member_id
     #提取issue_id
-    issue_id = if message.match /#(\d+)/i then RegExp.$1 else 0
+    issue_id = if message.match /#(\d+)/i then RegExp.$1 else null
     #提取done标签是否存在
     isDone = /#(done|ok)/i.test(message)
     #console.log /#(done|ok)/i.test(message), message
     #提取创建标签
-    isCreate = parseInt(issue_id) <= 0 or /#create/i.test(message)
+    isCreate = parseInt(issue_id) <= 0 or /#(create|new)/i.test(message)
     #提取doing标签
     isDoing = /#doing/i.test(message)
     _log "issue id -> #{issue_id}, done: #{isDone}, new: #{isCreate}, doing: #{isDoing}"
@@ -139,6 +139,7 @@ class Commit extends _BaseEntity
         cond = sha: commit.id
 
         self.count cond, (err, count)->
+          #count = 0
           if count > 0
             _log "Commit has already exists -> #{commit.id}"
             done null
