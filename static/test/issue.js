@@ -51,7 +51,7 @@ describe('测试issue模块', function(){
 
   it('更改issue的状态', function(done){
     var data = {
-      status: '进行中'
+      status: 'doing'
     }
 
     var url = generalURL + '/' + ISSUEID + '/status'

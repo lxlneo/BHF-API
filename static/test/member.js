@@ -34,7 +34,7 @@ describe('测试用户模块', function(){
 
   it('用错误的密码登录', function(done){
     doAction(module, 'PUT', {
-      username: USERNAME,
+      account: USERNAME,
       password: PASSWORD + 'a'
     }, function(status, content, xhr){
       expect(status).to.be(406)
@@ -44,7 +44,7 @@ describe('测试用户模块', function(){
 
   it('用错误的帐号登录', function(done){
     doAction(module, 'PUT', {
-      username: USERNAME + 'a',
+      account: USERNAME + 'a',
       password: PASSWORD
     }, function(status, content, xhr){
       expect(status).to.be(406)
@@ -54,7 +54,7 @@ describe('测试用户模块', function(){
 
   it('用刚刚的帐号登录', function(done){
     doAction(module, 'PUT', {
-      username: USERNAME,
+        account: USERNAME,
       password: PASSWORD
     }, function(status, content, xhr){
       expect(status).to.be(200)
@@ -86,7 +86,7 @@ describe('测试用户模块', function(){
 
   it('为接下来的测试登录', function(done){
     doAction(module, 'PUT', {
-      username: USERNAME,
+      account: USERNAME,
       password: PASSWORD
     }, function(status, content, xhr){
       expect(status).to.be(200)

@@ -1,11 +1,11 @@
 <html>
 <head>
   <title>Ajax File Uploader Plugin For Jquery</title>
-  <link href="ajaxfileupload.css" type="text/css" rel="stylesheet">
-  <script type="text/javascript" src="jquery.js"></script>
-  <script type="text/javascript" src="jquery.js"></script>
-  <script type="text/javascript" src="ajaxfileupload.js"></script>
-  <script type="text/javascript" src="test.js"></script>
+  <link href="/upload/ajaxfileupload.css" type="text/css" rel="stylesheet">
+  <script type="text/javascript" src="/upload/jquery.js"></script>
+  <script type="text/javascript" src="/upload/jquery.js"></script>
+  <script type="text/javascript" src="/upload/ajaxfileupload.js"></script>
+  <script type="text/javascript" src="/upload/test.js"></script>
 </head>
 
 <body>
@@ -67,6 +67,7 @@
             data:{name:'logan', id:'id'},
             success: function (data, status)
             {
+              alert('a')
               if(typeof(data.error) != 'undefined')
               {
                 if(data.error != '')
@@ -80,6 +81,7 @@
             },
             error: function (data, status, e)
             {
+             console.log(arguments)
               alert(e);
             }
           }
