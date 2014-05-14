@@ -26,8 +26,9 @@ class Commit extends _BaseEntity
     issue_id = if message.match /#(\d+)/i then RegExp.$1 else 0
     #提取done标签是否存在
     isDone = /#(done|ok)/i.test(message)
+    #console.log /#(done|ok)/i.test(message), message
     #提取创建标签
-    isCreate = /#create/i.test(message)
+    isCreate = parseInt(issue_id) <= 0 or /#create/i.test(message)
     #提取doing标签
     isDoing = /#doing/i.test(message)
     _log "issue id -> #{issue_id}, done: #{isDone}, new: #{isCreate}, doing: #{isDoing}"
@@ -52,7 +53,6 @@ class Commit extends _BaseEntity
           project_id: project_id
 
 
-        console.log data
         issue = new _Issue member
         issue.save data, (err, id)->
           _log "创建新的issue，id -> #{id}"
@@ -73,15 +73,15 @@ class Commit extends _BaseEntity
     #处理done
     queue.push(
       (done)->
+        #console.log issue_id, isDone, member_id, '测试'
         return done null if not (issue_id and isDone and member_id)
+        #console.log 'done', issue_id
         #如果有done标签，则完成这个issue
         issue = new _Issue member
         issue.finishedIssue issue_id, done
     )
 
-    _async.waterfall queue, (err)->
-      console.log '新的哈哈哈id', issue_id
-      cb err, issue_id
+    _async.waterfall queue, (err)-> cb err, issue_id
 
 
   #根据git用户名查找对应的用户id
@@ -138,8 +138,8 @@ class Commit extends _BaseEntity
         commit = commits[index++]
         cond = sha: commit.id
 
-        self.find cond, (err, result)->
-          if result.items.length > 0
+        self.count cond, (err, count)->
+          if count > 0
             _log "Commit has already exists -> #{commit.id}"
             done null
           else
