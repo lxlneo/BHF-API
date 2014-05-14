@@ -63,7 +63,7 @@ module.exports =
     },
     {
       #素材
-      path: 'project/:project_id(\\d+)/asset'
+      path: 'project/:project_id(\\d+)/assets'
       biz: 'asset'
       method: post: 'uploadFile', delete: false, put: false
     },
@@ -81,14 +81,13 @@ module.exports =
     }
     {
       ##查看素材
-      paths:{
-        get: '/asset/:project_id(\\d+)/:filename'
-      },
+      path: 'assets/:project_id(\\d+)/:filename'
       biz: 'asset'
+      id: false
       method: get: 'readFile', put: false, post: false, delete: false
     },{
       #issue相关
-      path: 'project/:project_id(\\d+)/issue',
+      path: 'project/:project_id(\\d+)/issue'
       biz: 'issue'
     },
     {
@@ -104,7 +103,7 @@ module.exports =
     },
     {
       #建立或者解除asset与issue的关系
-      path: 'issue/:issue_id(\\d+)/asset'
+      path: 'project/:project_id/issue/:issue_id(\\d+)/assets'
       biz: 'asset_issue_relation'
       method: put: false
     },
