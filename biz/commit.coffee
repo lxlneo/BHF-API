@@ -48,7 +48,7 @@ class Commit extends _BaseEntity
           status: if isDoing then 'doing' else 'new'
           creator: member_id
           owner: member_id
-          timestamp: new Date()
+          timestamp: Number(new Date())
           tag: tag
           project_id: project_id
 
@@ -121,7 +121,7 @@ class Commit extends _BaseEntity
           creator: member_id
           message: commit.message
           sha: commit.id
-          timestamp: new Date(commit.timestamp)
+          timestamp: Number(new Date(commit.timestamp))
         self.save data, done
     )
 
@@ -178,30 +178,32 @@ class Commit extends _BaseEntity
   ###
     #处理git commit
   ###
-  postCommits: (project_id, data, cb)->
+  postCommit: (req, res, next)->
+    project_id = req.params.project_id
+    data = req.body
     self = @
     queue = []
+
     #取得projectid
     queue.push(
       (done)->
         _log data.repository.url
         #如果在url中指定了project_id，则不用再去查找
-        return done null, project_id if project_id
-        self.findProject data.repository.url, done
+        return done null if project_id
+        self.findProject data.repository.url, (err, id)->
+          project_id = id
+          done err
     )
 
     #保存每一个commit
     queue.push(
-      (project_id, done)->
+      (done)->
         _log "匹配项目ID为：#{project_id}"
         self.saveCommits project_id, data.commits, done
     )
     #queue.push
-    _async.waterfall queue, cb
-
-  #提交git commit
-  gitCommit: (req, res, next)->
-    @postCommits req.params.project_id, req.body, ()->res.end()
+    _async.waterfall queue, (err)->
+      res.end('')
 
   #获取issue的commit
   getCommit: (req, res, next)->
