@@ -173,6 +173,9 @@ class Commit extends _BaseEntity
     options =
       orderBy: timestamp: 'desc'
       pagination: limit: data.limit || 20, offset: data.offset || 0
+      fields: (query)->
+        fields = '*, (SELECT realname FROM member WHERE "commit".creator = member.id) AS realname'
+        query.select(query.knex.raw(fields))
       #beforeQuery: (query, isCount)->
         #query.orderBy 'timestamp', 'desc' if not isCount
 
