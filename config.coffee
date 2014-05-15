@@ -42,6 +42,14 @@ module.exports =
       biz: 'project'
     },
     {
+    #提交commit，用于git或svn提交commit时，自动获取commit并分析，需要指定project_id
+      path: 'project/:project_id/git/commit'
+      biz: 'commit'
+      id: false
+      anonymity: ['post']
+      method: delete: false, put: false, get: false, post: 'gitCommit'
+    },
+    {
       #提交commit，用于git或svn提交commit时，自动获取commit并分析
       path: 'git/commit'
       biz: 'commit'
@@ -75,7 +83,7 @@ module.exports =
     },
     {
       #获取某个issue下的所有commit
-      path: 'issue/:issue_id(\\d+)/commit'
+      path: 'project/:project_id/issue/:issue_id(\\d+)/commit'
       biz: 'commit'
       method: post: false, delete: false, put: false
     }

@@ -178,13 +178,15 @@ class Commit extends _BaseEntity
   ###
     #处理git commit
   ###
-  postCommits: (data, cb)->
+  postCommits: (project_id, data, cb)->
     self = @
     queue = []
     #取得projectid
     queue.push(
       (done)->
         _log data.repository.url
+        #如果在url中指定了project_id，则不用再去查找
+        return done null, project_id if project_id
         self.findProject data.repository.url, done
     )
 
@@ -199,7 +201,7 @@ class Commit extends _BaseEntity
 
   #提交git commit
   gitCommit: (req, res, next)->
-    @postCommits req.body, ()->res.end()
+    @postCommits req.params.project_id, req.body, ()->res.end()
 
   #获取issue的commit
   getCommit: (req, res, next)->
