@@ -62,7 +62,7 @@ class Issue extends _BaseEntity
   find: (data, cb)->
     self = @
     cond = {}
-    cond.id = data.id
+    cond['issue.id'] = data.id
     cond.project_id = data.project_id
 
     #选项
