@@ -7,6 +7,8 @@ _schema = require('../schema/issue').schema
 _AssetIssueRelation = require './asset_issue_relation'
 _async = require 'async'
 _common = require '../common'
+_Member = require './member'
+_moment = require 'moment'
 
 #定义一个Project类
 class Issue extends _BaseEntity
@@ -60,41 +62,47 @@ class Issue extends _BaseEntity
   find: (data, cb)->
     self = @
     cond = {}
-    cond.tag = data.tag
     cond.id = data.id
     cond.project_id = data.project_id
 
     #选项
     options =
       pagination: limit: data.limit, offset: data.offset
-      orderBy: timestamp: 'DESC'
+      orderBy: 'issue.status': 'desc', 'issue.timestamp': 'DESC'
       fields: (query)->
-        query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = issue.owner) AS realname')
+        query.select ['issue.*', 'project.title AS project_name']
+        #query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = issue.owner) AS realname')
 
       #在查询之前，对query再处理
       beforeQuery: (query)->
+        query.join('project', ()->
+          this.on 'issue.project_id', '=', 'project.id'
+        , 'left')
+
         query.limit data.limit || 10
         query.offset data.offset || 0
         #只取未完成的
         if(data.status is 'undone')
-          query.where 'status', '<>', 'done'
-          query.where 'status', '<>', 'trash'
+          query.where 'issue.status', '<>', 'done'
+          query.where 'issue.status', '<>', 'trash'
         else if data.status
-          query.where 'status', data.status
+          query.where 'issue.status', data.status
+        else
+          #默认是不获取trash的数据
+          query.where 'issue.status', '<>', 'trash'
 
         #指定标签
-        query.where 'tag', data.tag if data.tag
+        query.where 'issue.tag', data.tag if data.tag
+        #这里不查义project的tag
+        query.where 'issue.tag', '<>', 'project'
         #指定完成时间段
         #query.where 'finish_time', '>=', data.beginTime if data.beginTime
         #query.where 'finish_time', '<=', data.endTime if data.endTime
-        self.queryTimeRange query, 'finish_time', data.finish_time
-        self.queryTimeRange query, 'timestamp', data.timestamp
+        self.queryTimeRange query, 'issue.finish_time', data.finish_time
+        self.queryTimeRange query, 'issue.timestamp', data.timestamp
 
         #指定责任人
-        query.where 'owner', data.owner if data.owner
-
-        query.orderBy 'status', 'desc'
-        query.orderBy 'timestamp', 'desc'
+        query.where 'issue.owner', data.owner if data.owner isnt undefined
 
 
     super cond, options, cb
@@ -150,5 +158,73 @@ class Issue extends _BaseEntity
       res.json data
 
     #http://127.0.0.1:14318/api/project/1/discussion
+
+  #获取已关联的issue
+  findAssignedIssue: (start_time, end_time, data, cb)->
+    #http://localhost:8000/api/report/issue?start_time=1399790723523&end_time=1400136323523
+    self = @
+    index = 0
+
+
+    _async.whilst(
+      (-> return index < data.assigned.length)
+      ((done)->
+        member = data.assigned[index].member
+        sql = "SELECT A.*, B.title AS project_name FROM issue A LEFT JOIN project B ON A.project_id = B.id
+          WHERE A.owner = #{member.id} AND (
+            (A.finish_time BETWEEN #{start_time} AND #{end_time})
+              OR
+            (A.timestamp BETWEEN #{start_time} AND #{end_time})
+          ) AND A.status <> 'trash' AND A.tag <> 'project'"
+
+        self.entity().knex.raw(sql).exec (err, result)->
+          return done err if err
+          data.assigned[index].issue = result[0]
+          index++
+          done(err)
+      )
+      cb
+    )
+
+  #获取报表
+  report: (req, res, next)->
+    now = Number(new Date())
+    start_time = Number(req.query.start_time)
+    end_time = Number(req.query.end_time)
+    start_time = now if isNaN(start_time)
+    end_time = now if isNaN(end_time)
+
+    ###本周
+    if not start_time and not end_time
+      end = _moment()
+      start = _moment(end).subtract('days', end.day())
+      time_range = Number(start) + "|" + Number(end)
+    ###
+
+    result = assigned: [], unassigned: []
+    self = @
+    queue = []
+
+    #获取用户，并获取他们的owner
+    queue.push (
+      (done)->
+        member = new _Member self.member
+        member.find {}, (err, data)->
+          result.assigned.push member: member for member in data.items
+          self.findAssignedIssue start_time, end_time, result, done
+    )
+
+    #查询未关联到人的，即没有owner的任务
+    queue.push(
+      (done)->
+        self.find owner: null, (err, data)->
+          result.unassigned = data.items
+          done null
+    )
+
+    _async.series queue, (err)->
+      _common.response500 res, err if err
+      res.json result
+
 
 module.exports = Issue
