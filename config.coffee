@@ -86,6 +86,12 @@ module.exports =
       biz: 'issue'
     },
     {
+      #获取issue的报表，按用户分组
+      path: 'report/issue'
+      biz: 'issue'
+      method: put: false, delete: false, post: false, get: 'report'
+    },
+    {
       #针对issue的评论
       path: 'project/:project_id(\\d+)/issue/:issue_id(\\d+)/comment'
       biz: 'comment'
