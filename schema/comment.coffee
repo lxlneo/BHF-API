@@ -5,4 +5,4 @@ exports.schema =
     issue_id: "integer"
     creator: "integer"
     content: "text"
-    timestamp: "dateTime"
+    timestamp: "integer"

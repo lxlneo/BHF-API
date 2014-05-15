@@ -7,6 +7,6 @@ exports.schema =
     owner: "integer"
     creator: "integer"
     status: ""
-    timestamp: "dateTime"
-    finish_time: "dateTime"
+    timestamp: "integer"
+    finish_time: "integer"
     project_id: "integer"

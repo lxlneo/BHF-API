@@ -8,4 +8,4 @@ exports.schema =
     sha: "text"
     addition: "integer"
     deletion: "integer"
-    timestamp: "dateTime"
+    timestamp: "integer"
