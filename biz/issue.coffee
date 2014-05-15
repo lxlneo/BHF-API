@@ -159,6 +159,20 @@ class Issue extends _BaseEntity
 
     #http://127.0.0.1:14318/api/project/1/discussion
 
+  #查询指定时间内的issue
+  findIssueInRange: (start_time, end_time, condition, cb)->
+    sql = "SELECT A.*, B.title AS project_name FROM issue A LEFT JOIN project B ON A.project_id = B.id
+              WHERE 1 = 1 #{condition} AND (
+                (A.finish_time BETWEEN #{start_time} AND #{end_time})
+                  OR
+                (A.timestamp BETWEEN #{start_time} AND #{end_time})
+              ) AND A.status <> 'trash' AND A.tag <> 'project'"
+
+    console.log sql
+    @entity().knex.raw(sql).exec (err, result)->
+      return cb err if err
+      cb err, result[0]
+
   #获取已关联的issue
   findAssignedIssue: (start_time, end_time, data, cb)->
     #http://localhost:8000/api/report/issue?start_time=1399790723523&end_time=1400136323523
@@ -170,6 +184,14 @@ class Issue extends _BaseEntity
       (-> return index < data.assigned.length)
       ((done)->
         member = data.assigned[index].member
+        cond = "AND A.owner = #{member.id}"
+        self.findIssueInRange start_time, end_time, cond, (err, result)->
+          return done err if err
+          data.assigned[index].issue = result
+          index++
+          done(err)
+
+        ###
         sql = "SELECT A.*, B.title AS project_name FROM issue A LEFT JOIN project B ON A.project_id = B.id
           WHERE A.owner = #{member.id} AND (
             (A.finish_time BETWEEN #{start_time} AND #{end_time})
@@ -182,9 +204,16 @@ class Issue extends _BaseEntity
           data.assigned[index].issue = result[0]
           index++
           done(err)
+        ###
       )
       cb
     )
+
+  #查找所有的未关联任务
+  findUnassignedIssue: (start_time, end_time, cb)->
+    cond = ' AND A.owner IS null'
+    @findIssueInRange start_time, end_time, cond, cb
+
 
   #获取报表
   report: (req, res, next)->
@@ -217,8 +246,8 @@ class Issue extends _BaseEntity
     #查询未关联到人的，即没有owner的任务
     queue.push(
       (done)->
-        self.find owner: null, (err, data)->
-          result.unassigned = data.items
+        self.findUnassignedIssue start_time, end_time, (err, data)->
+          result.unassigned = data
           done null
     )
 
