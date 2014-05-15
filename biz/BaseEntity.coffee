@@ -84,7 +84,7 @@ class BaseEntity
 
         exec.then (items)->
           #如果存在id，则表示查找单条数据
-          if condition.id
+          if condition.id or options.isSingle
             result = if items.length == 0 then null else items[0]
           else
             result =

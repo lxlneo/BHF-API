@@ -67,6 +67,7 @@ class Issue extends _BaseEntity
 
     #选项
     options =
+      isSingle: Boolean(data.id)
       pagination: limit: data.limit, offset: data.offset
       orderBy: 'issue.status': 'desc', 'issue.timestamp': 'DESC'
       fields: (query)->
