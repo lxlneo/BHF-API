@@ -1,22 +1,23 @@
 {
-    "name": "BHF",
-    "version": "0.0.1",
-    "scripts": {
-       "start": "node-dev app.coffee",
-        "test": "node-dev ./test/index.coffee"
-    },
-    "dependencies": {
-        "express": "*",
-        "coffee-script": "*",
-        "sqlite3": "",
-        "underscore": "",
-        "async": "",
-        "mocha": "",
-        "expect.js": "",
-        "knex": "",
-        "node-uuid": "",
-        "mime": "",
-        "node-markdown": "",
-        "colors": ""
-    }
+  "name": "BHF",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "node-dev app.coffee",
+    "test": "node-dev ./test/index.coffee"
+  },
+  "dependencies": {
+    "express": "*",
+    "coffee-script": "*",
+    "sqlite3": "",
+    "underscore": "",
+    "async": "",
+    "mocha": "",
+    "expect.js": "",
+    "knex": "",
+    "node-uuid": "",
+    "mime": "",
+    "node-markdown": "",
+    "colors": "",
+    "moment": "^2.6.0"
+  }
 }

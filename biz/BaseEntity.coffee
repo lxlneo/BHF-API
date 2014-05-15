@@ -48,7 +48,7 @@ class BaseEntity
         exec = self.entity().where condition
         options.beforeQuery?(exec, true)
         exec.select exec.knex.raw('count(*)')
-        console.log exec.toString()
+        #console.log exec.toString()
 
         #汇总统计
         self.scalar exec.toString(), (err, count)-> done null, count
@@ -80,7 +80,7 @@ class BaseEntity
           exec.offset page.offset
 
         sql = exec.toString()
-        console.log sql
+        #console.log sql
 
         exec.then (items)->
           #如果存在id，则表示查找单条数据
