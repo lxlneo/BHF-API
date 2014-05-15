@@ -31,6 +31,13 @@ exports.response404 = (res)->
   res.statusCode = 404
   res.end()
 
+exports.response500 = (res, message)->
+  res.statusCode = 500
+  if typeof message is 'string'
+    res.end message
+  else
+    res.json message || {}
+
 
 #检查文件夹是否存在，如果不存在，则创建
 exports.dirPromise = (dir)->
