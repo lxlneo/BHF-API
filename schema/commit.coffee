@@ -9,3 +9,5 @@ exports.schema =
     addition: "integer"
     deletion: "integer"
     timestamp: "integer"
+    url: 'text'
+    email: ''

@@ -121,6 +121,8 @@ class Commit extends _BaseEntity
           creator: member_id
           message: commit.message
           sha: commit.id
+          email: commit.author.email
+          url: commit.url
           timestamp: Number(new Date(commit.timestamp))
         self.save data, done
     )
