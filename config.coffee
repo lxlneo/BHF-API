@@ -42,26 +42,19 @@ module.exports =
       biz: 'project'
     },
     {
-    #提交commit，用于git或svn提交commit时，自动获取commit并分析，需要指定project_id
-      path: 'project/:project_id/git/commit'
-      biz: 'commit'
-      id: false
-      anonymity: ['post']
-      method: delete: false, put: false, get: false, post: 'gitCommit'
-    },
-    {
       #提交commit，用于git或svn提交commit时，自动获取commit并分析
       path: 'git/commit'
       biz: 'commit'
       id: false
       anonymity: ['post']
-      method: delete: false, put: false, get: false, post: 'gitCommit'
+      method: delete: false, put: false, get: false, post: 'postCommit'
     },
     {
       #查看某个项目下的所有commit
+      #提交commit，用于git或svn提交commit时，自动获取commit并分析，需要指定project_id
       path: 'project/:project_id(\\d+)/commit'
       biz: 'commit'
-      method: delete: false, put: false, post: false, get: 'getCommit'
+      method: delete: false, put: false, post: 'postCommit', get: 'getCommit'
     },
     {
     #查看某个issue下的所有commit
@@ -74,12 +67,6 @@ module.exports =
       path: 'project/:project_id(\\d+)/assets'
       biz: 'asset'
       method: post: 'uploadFile', delete: false, put: false
-    },
-    {
-      #获取一个项目top N的commits
-      path: 'project/:project_id(\\d+)/commit'
-      biz: 'commit'
-      method: post: false, delete: false, put: false
     },
     {
       #获取某个issue下的所有commit
