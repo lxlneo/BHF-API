@@ -142,8 +142,10 @@ class Issue extends _BaseEntity
 
     queue.push(
       (done)->
+        fields = "*, (SELECT realname FROM member WHERE member.id = issue.creator) AS realname,
+          (SELECT COUNT(*) FROM comment WHERE issue_id = issue.id) comment_count"
         sql += "ORDER BY timestamp collate nocase DESC limit #{limit} offset #{offset}"
-        sql = sql.replace ':fields', '*, (SELECT realname FROM member WHERE member.id = issue.creator) AS realname'
+        sql = sql.replace ':fields', fields
         self.entity().knex.raw(sql).then (result)-> done null, result[0]
     )
 
