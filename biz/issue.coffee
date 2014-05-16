@@ -267,5 +267,82 @@ class Issue extends _BaseEntity
       return _common.response500 res, err if err
       res.end()
 
+  #获取用户的统计数据
+  statisticOfMembers: (project_id, data, cb)->
+    self = @
+    index = 0
+    _async.whilst(
+      (-> return index < data.members.length)
+      ((done)->
+        member = data.members[index++]
+        member_id = member.profile.id
+        member.stat = {}
+        #查询某个用户的issue数量
+        self.countIssueOfProject project_id, member_id, (err, total)->
+          member.stat.total = total
+          self.countDelayIssueOfProject project_id, member_id, (err, delay)->
+            member.stat.delay = delay
+            done err
+      )
+      cb
+    )
+
+  #汇总统计指定project下的issue总数量，不包括status=trash和tag=project的，member可以不指定
+  countIssueOfProject: (project_id, member_id, cb)->
+    sql = "SELECT COUNT(id) FROM issue WHERE tag <> 'project' AND status <> 'trash' AND project_id = #{project_id}"
+    sql += " AND owner = #{member_id}" if member_id
+
+    @scalar sql, cb
+
+  #汇总延误数
+  countDelayIssueOfProject: (project_id, member_id, cb)->
+    sql = "SELECT COUNT(*) FROM issue WHERE plan_finish_time < #{Number(new Date())}
+      AND tag <> 'project' AND status IN ('new', 'doing', 'pause')
+      AND project_id = #{project_id}"
+    sql += " AND owner = #{member_id}" if member_id
+
+    @scalar sql, cb
+
+  ###
+    统计分析，截至当前时间，指定项目
+  ###
+  statistic: (req, res, next)->
+    project_id = req.params.project_id
+
+    self = @
+    queue = []
+    result =
+      overview: total: 0, delay: 0
+      members: []
+
+    #查出总任务数
+    queue.push(
+      (done)->
+        self.countIssueOfProject project_id, null, (err, count)->
+          result.overview.total = count
+          done err
+    )
+
+    #延误数，即plan_finish_time<now的，状态为doing/new/pause的
+    queue.push(
+      (done)->
+        self.countDelayIssueOfProject project_id, null, (err, count)->
+          result.overview.delay = count
+          done err
+    )
+
+    #每个用户的任务数量
+    queue.push(
+      (done)->
+        #查出所有的用户
+        member = new _Member self.member
+        options = fields: ['id', 'username', 'email', 'realname', 'git', 'role']
+        member.find {}, options, (err, data)->
+          result.members.push profile: member for member in data.items
+          self.statisticOfMembers project_id, result, done
+    )
+
+    _async.series queue, (err)->
+      res.json result
 
 module.exports = Issue

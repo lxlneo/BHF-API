@@ -99,6 +99,12 @@ module.exports =
       method: put: false, delete: false, post: false, get: 'report'
     },
     {
+      #获取项目的统计情况
+      path: 'project/:project_id(\\d+)/stat'
+      biz: 'issue'
+      method: put: false, delete: false, post: false, get: 'statistic'
+    },
+    {
       #针对issue的评论
       path: 'project/:project_id(\\d+)/issue/:issue_id(\\d+)/comment'
       biz: 'comment'
