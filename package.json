@@ -18,6 +18,7 @@
     "mime": "",
     "node-markdown": "",
     "colors": "",
-    "moment": "^2.6.0"
+    "moment": "^2.6.0",
+    "lodash": "^2.4.1"
   }
 }
