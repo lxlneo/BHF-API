@@ -57,6 +57,13 @@ module.exports =
       method: delete: false, put: false, post: 'postCommit', get: 'getCommit'
     },
     {
+      #更改issue的所有者及计划
+      path: 'project/:project_id(\\d+)/issue/:issue_id(\\d+)/plan'
+      biz: 'issue'
+      method: delete: false, post: false, put: 'changeOwnerAndPlanFinishTime', get: false
+    },
+    #0 #doing @功能 增加改变owner和计划完成时间的接口
+    {
     #查看某个issue下的所有commit
       path: 'project/:project_id(\\d+)/issue/:issue_id(\\d+)/commit'
       biz: 'commit'

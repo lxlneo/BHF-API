@@ -10,3 +10,5 @@ exports.schema =
     timestamp: "integer"
     finish_time: "integer"
     project_id: "integer"
+    #计划完成时间
+    plan_finish_time: "integer"

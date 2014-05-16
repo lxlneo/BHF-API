@@ -254,6 +254,16 @@ class Issue extends _BaseEntity
       _common.response500 res, err if err
       res.json result
 
+  #改变所有者及计划完成的时间
+  changeOwnerAndPlanFinishTime: (req, res ,next)->
+    id = req.params.id
+    data =
+      owner: req.body.owner
+      plan_finish_time: req.body.plan_finish_time
+
+    @save data, (err)->
+      return _common.response500 res, err if err
+      res.end()
 
 
 module.exports = Issue

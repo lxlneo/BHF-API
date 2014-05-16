@@ -274,6 +274,19 @@
 		}
 不支持删除
 
+##更改issue计划
+变更所有者和计划完成时间
+
+* URL：`project/:project_id(\\d+)/issue/:issue_id(\\d+)/plan`
+* Verb: `PUT`
+* Data:
+
+		{
+			owner: 19,
+			plan_finish_time: 1400212171026
+		}
+
+
 #Issue与Asset的关系
 
 ##查询
