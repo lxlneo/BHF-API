@@ -20,7 +20,7 @@ class Commit extends _BaseEntity
 
   #过滤掉message中包含的指令及头尾的空格
   commitMessageFilter: (message)->
-    message = message.replace(/#(new|doing|done|ok|create|id|\d+)/ig, '').replace(/@(.+)\s/, '')
+    message = message.replace(/#(new|doing|done|ok|create|id|\d+)/ig, '').replace(/@(.+?)\s/, '')
     message = _common.trim message
     message
 
