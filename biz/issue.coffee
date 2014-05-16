@@ -62,48 +62,46 @@ class Issue extends _BaseEntity
   find: (data, cb)->
     self = @
     cond = {}
-    cond['issue.id'] = data.id
+    cond.id = data.id
     cond.project_id = data.project_id
 
     #选项
     options =
       isSingle: Boolean(data.id)
       pagination: limit: data.limit, offset: data.offset
-      orderBy: 'issue.status': 'desc', 'issue.timestamp': 'DESC'
+      orderBy: 'status': 'desc', 'timestamp': 'DESC'
       fields: (query)->
-        query.select ['issue.*', 'project.title AS project_name']
-        #query.select query.knex.raw('*, (SELECT realname FROM member WHERE member.id = issue.owner) AS realname')
+        fields = "*, (SELECT realname FROM member WHERE member.id = issue.owner) AS owner_name,
+          (SELECT realname FROM member WHERE member.id = issue.creator) AS creator_name,
+          (SELECT title FROM project WHERE project.id = project_id) AS project_name"
+        query.select query.knex.raw(fields)
 
       #在查询之前，对query再处理
       beforeQuery: (query)->
-        query.join('project', ()->
-          this.on 'issue.project_id', '=', 'project.id'
-        , 'left')
-
         query.limit data.limit || 10
         query.offset data.offset || 0
         #只取未完成的
         if(data.status is 'undone')
-          query.where 'issue.status', '<>', 'done'
-          query.where 'issue.status', '<>', 'trash'
+          query.where 'status', '<>', 'done'
+          query.where 'status', '<>', 'trash'
         else if data.status
-          query.where 'issue.status', data.status
+          query.where 'status', data.status
         else
           #默认是不获取trash的数据
-          query.where 'issue.status', '<>', 'trash'
+          query.where 'status', '<>', 'trash'
 
         #指定标签git
-        query.where 'issue.tag', data.tag if data.tag
+        query.where 'tag', data.tag if data.tag
         #这里不查义project的tag
-        query.where 'issue.tag', '<>', 'project'
+        query.where 'tag', '<>', 'project'
         #指定完成时间段
         #query.where 'finish_time', '>=', data.beginTime if data.beginTime
         #query.where 'finish_time', '<=', data.endTime if data.endTime
-        self.queryTimeRange query, 'issue.finish_time', data.finish_time
-        self.queryTimeRange query, 'issue.timestamp', data.timestamp
+        self.queryTimeRange query, 'finish_time', data.finish_time
+        self.queryTimeRange query, 'timestamp', data.timestamp
 
         #指定责任人
-        query.where 'issue.owner', data.owner if data.owner isnt undefined
+        query.where 'owner', data.owner if data.owner isnt undefined
 
 
     super cond, options, cb
@@ -255,6 +253,7 @@ class Issue extends _BaseEntity
     _async.series queue, (err)->
       _common.response500 res, err if err
       res.json result
+
 
 
 module.exports = Issue
