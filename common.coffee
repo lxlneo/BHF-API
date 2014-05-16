@@ -38,6 +38,10 @@ exports.response500 = (res, message)->
   else
     res.json message || {}
 
+#过滤掉着头尾的空格
+exports.trim = (text)->
+  text = text.replace(/^\s*(.+?)\s*$/, "$1") unless text
+  text
 
 #检查文件夹是否存在，如果不存在，则创建
 exports.dirPromise = (dir)->

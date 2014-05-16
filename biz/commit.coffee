@@ -18,6 +18,12 @@ class Commit extends _BaseEntity
     @schema = _schema
     super
 
+  #过滤掉message中包含的指令及头尾的空格
+  commitMessageFilter: (message)->
+    message = message.replace(/#(new|doing|done|ok|create|id|\d+)/ig, '').replace(/@(.+)\s/, '')
+    message = _common.trim message
+    message
+
   #分析commit message中的标签，来关联对应的issue
   analysisCommitMessage: (project_id, message, member_id, cb)->
     self = this
@@ -44,7 +50,7 @@ class Commit extends _BaseEntity
         tag = _common.checkTag tag
         #替换掉message中的标签
         data =
-          title: message.replace(/#(new|doing|done|ok|create|id|\d+)/ig, '').replace(/@(.+)\s/, '')
+          title: self.commitMessageFilter message
           status: if isDoing then 'doing' else 'new'
           creator: member_id
           owner: member_id
@@ -119,7 +125,7 @@ class Commit extends _BaseEntity
           issue_id: issue_id
           project_id: projectId
           creator: member_id
-          message: commit.message
+          message: self.commitMessageFilter commit.message
           sha: commit.id
           email: commit.author.email
           url: commit.url
