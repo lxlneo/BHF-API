@@ -1,5 +1,6 @@
 _store = require './store'
 _async = require 'async'
+_ = require 'underscore'
 
 class BaseEntity
   constructor: (@member)->
@@ -123,10 +124,36 @@ class BaseEntity
         console.log '删除', total
         callback null, total
 
+  #获取字段的默认值
+  defaultValue: (value, type, def)->
+
+  #根据规则
+  validate: (value, rule)->
+    rule = {type: rule} if typeof rule is 'string'
+    switch rule.type
+      when 'integer'
+        value = parseInt(value)
+        value = rule.def || 0 if isNaN(value)
+      when 'dateTime'
+        value = new Date(value)
+      when '', 'string'
+        #string的类型是varchar(255)
+        value = value.substr 0, 255
+      when 'text'
+        value = value.substr 0, rule.maxLength if rule.maxLength
+
+    value
+
   #根据schema转换数据为合适的格式
   parse: (data)->
-    result = {}
-    #for key, value of @schema.fields
+    #复制当前schema
+    fields = _.clone @schema.fields
+    #只选择有用的数据
+    data = _.pick data, _.keys(fields)
 
+    #根据规则校验数据
+    result = {}
+    result[key] = @validate(value, fields[key]) for key, value of data
+    result
 
 module.exports =  BaseEntity

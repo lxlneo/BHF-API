@@ -92,7 +92,7 @@ class Issue extends _BaseEntity
           #默认是不获取trash的数据
           query.where 'issue.status', '<>', 'trash'
 
-        #指定标签
+        #指定标签git
         query.where 'issue.tag', data.tag if data.tag
         #这里不查义project的tag
         query.where 'issue.tag', '<>', 'project'
