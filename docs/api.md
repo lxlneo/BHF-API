@@ -52,7 +52,13 @@
 ##查询
 * URL：`project/:id(\\d+)?`
 * Verb: `GET`
-* Data：所有的字段都可以用来查询，目前仅支持等式查询，如`project?contact=张三`，可以查询联系人为张三的数据
+* Data：
+
+		{
+  			"limit": 10,
+  			"offset": 10
+		}
+
 * Returns 
 
 		{
@@ -133,8 +139,9 @@
 
 ##查看项目的讨论
 获取一个项目下所有的讨论
+
 * URL: `project/:project_id(\\d+)/discussion`
-* Verb: `GET`
+* Verb: `GET` 
 * Data: 
 
 		{
@@ -147,33 +154,25 @@
 		{
 		  "items": [
 		    {
-		      "id": 1,
-		      "title": "修改后的issue标题",
-		      "content": "详细的描述",
-		      "tag": "bug",
-		      "owner": "兰斌",
-		      "creator": 1,
-		      "status": "doing",
-		      "timestamp": 1395824836837,
-		      "project_id": 1,
-		      "finish_time": 0
-		    },
-		    {
-		      "id": 13,
-		      "title": "test",
-		      "content": "test",
+		      "id": 68,
+		      "title": "讨论一下commit的指令",
+		      "content": "<p>&nbsp; 1. #+数字id，表示将commit关联到具体的issue</p>",
 		      "tag": "project",
 		      "owner": null,
-		      "creator": null,
-		      "status": null,
-		      "timestamp": null,
-		      "project_id": 1,
-		      "finish_time": 0
+		      "creator": 0,
+		      "status": "new",
+		      "timestamp": 1400060911827,
+		      "finish_time": null,
+		      "project_id": 4,
+		      "plan_finish_time": null,
+		      "realname": null,
+		      "comment_count": 1
 		    }
 		  ],
 		  "pagination": {
-		    "page_index": 1,
-		    "page_size": 10
+		    "limit": "6",
+		    "offset": 0,
+		    "count": 1
 		  }
 		}
 
@@ -424,9 +423,10 @@
 * Verb: `GET`
 * Returns: 
 
-		{
-		  "username": "conis",
-		  "email": "conis.yi@gmail.com"
+		{		
+			"realname": "李四",
+			"username": "lishi",
+			"email": "lishi@gmail.com"
 		}
 
 
@@ -446,14 +446,14 @@
 * URL: `mine`
 * Verb: `POST`
 * Data: 
-
-	 	{
-	 	    realname: '张三',     //真实姓名
-            username: 'conis',    //用户名
-            password: '123456',     //密码
-            email: 'email@gmail.com',    //用户邮件
-            git: 'git@git.hunantv.com'  //用户的git帐号
-	    }
+		
+		{
+			realname: '张三',     //真实姓名
+			username: 'conis',    //用户名
+			password: '123456',     //密码
+			email: 'email@gmail.com',    //用户邮件
+			git: 'git@git.hunantv.com'  //用户的git帐号
+		}
 
 ##注销
 * URL: `mine`
@@ -467,20 +467,24 @@
 * Returns:
 返回所有的成员信息
 
-        {
-          "items": [
-            {
-              "username": "1395824836378"
-            },
-            {
-              "username": "1395825160239"
-            }
-          ],
-          "pagination": {
-            "page_index": 1,
-            "page_size": 10
-          }
-        }
+		{
+		  "items": [
+		    {
+		      "id": 1,
+		      "username": "conis",
+		      "email": "lishi@gmail.com",
+		      "realname": "易晓峰",
+		      "git": "wvv8oo@gmail.com"
+		    },
+		    {
+		      "id": 2,
+		      "username": "lxl",
+		      "email": "lxlneo.g@gmail.com",
+		      "realname": "李雪龙",
+		      "git": "lxlneo.g@gmail.com"
+		    }
+		  ]
+		}
 
 #Commit
 
@@ -489,32 +493,19 @@
 * URL: `commit`
 * Verb: `POST`
 * Data：
-当git commit发生时，向服务器提交commit相关的信息，要求提交一个合法的JSON数据
-
-		{
-			branch: "master",
-			account: "标识用户的帐号，例如在git中的email",
-			repos: "远程repos的地址",
-			items: [
-				{
-					sha: "每个commit的唯一编号",
-					//添加的行数
-					addition: 3,
-					//删除的行数
-					deletion: 5,
-					//受影响的文件数
-					file: 4,
-					message: "详细的描述"
-				}
-			]
-		}
+数据格式参考GitLab提供的数据格式，略。注意需要用户库中的git邮件地址要与commit的邮件地址匹配，project的git地址，也需要与git库的url匹配，否则无法识别到正确的的项目与人
 		
 
 ##commit message的标签
-在提交commit的时候，可以通过在message中添加指定的标签，触发相应的操作。标签的格式为#+标签+空格，如`#12 #done message`
+在提交commit的时候，可以通过在message中添加指定的标签，触发相应的操作。
 
-* `#(\\id)+` 关联到某个issue，例如`#12 某某问题`，这条将会关联到id为12的issue下
-* `#done`	完成某个issue，必需和issue id的宏一起才生效，如`#12 #done 某个问题终于完成了`
+1. `\#+数字id`，表示将commit关联到具体的issue，如`#12`表示将此commit关联到id为12的issue
+
+2. `\#done`（也包括`#ok`）表示完成某个issue，这个必需和#id组合使用，如#12#done，表示将关联id为12的issue，同时完成此issue
+
+3. `\#0`（也包括`#create`、`#new`）表示创建一个新的issue，并将此commit关联到新的issue，此命令可以组合状态。如`#0#doing`，表示创建一个issue,同时将此issue的状态置为doing
+
+4. `@tag`，表示给新建的issue打上标签，如`#0@bug#done`，表示新建一个issue，tag为bug，状态为done，注意`@tag`后面一定要有空格，`@bug修改了xx问题`这种是不会被正确识别的
 
 ##读取project下的commit
 获取某个Project下的commit Top N，如果没有指定Limit，则获取10条
@@ -524,46 +515,35 @@
 * Data：
 
 		{
-			//指定最大获取的数量
-			"limit": 20,
-			//要跳过的条数
-			"skip": 0
+			"limit": 10
 		}
 * Returns
 
 		{
 		  "items": [
 		    {
-		      "id": 1,
-		      "project_id": 1,
-		      "issue_id": 0,
-		      "creator": 0,
-		      "message": "增加评论对project的支持",
-		      "sha": "ea7b0fae83e0e1b9d0dc7fdf2963f61ed4f0c0cb",
+		      "id": 133,
+		      "project_id": 4,
+		      "issue_id": 80,
+		      "creator": 1,
+		      "message": "  给discussion增加comment_count的字段",
+		      "sha": "4437c0adf999328c22b874dbd5379f64ba9676ba",
 		      "addition": null,
 		      "deletion": null,
-		      "timestamp": 1399536530517
-		    },
-		    {
-		      "id": 2,
-		      "project_id": 1,
-		      "issue_id": 0,
-		      "creator": 0,
-		      "message": "重载查询，支持查询project/issue的comment，并支持查询comment的回复",
-		      "sha": "483eba7583b8f0b2fd9a93309b3e6f524300a662",
-		      "addition": null,
-		      "deletion": null,
-		      "timestamp": 1399536530521
+		      "timestamp": 1400224476882,
+		      "url": "http://git.hunantv.com/conis/bhf-api/commit/4437c0adf999328c22b874dbd5379f64ba9676ba",
+		      "email": "wvv8oo@gmail.com",
+		      "realname": "易晓峰"
 		    }
 		  ],
 		  "pagination": {
-		    "page_index": 1,
-		    "page_size": 10
+		    "limit": "2",
+		    "offset": 0,
+		    "count": 25
 		  }
 		}
 
-##读取issue
-##查询
+##读取issue下的commit
 获取某个Issue下的commit Top N，如果没有指定Limit，则获取10条
 
 * URL：`project/:project_id/issue/:issue_id(\\d+)/commit`
@@ -580,20 +560,24 @@
 		{
 		  "items": [
 		    {
-		      "id": 24,
-		      "project_id": 1,
-		      "issue_id": 1,
+		      "id": 72,
+		      "project_id": 4,
+		      "issue_id": 50,
 		      "creator": 1,
-		      "message": "#1#done 修复检查文件名出错的bug\n\n测试一下api",
-		      "sha": "7ee36e1c096c4b721ec564f16edd97bdb6c55b22",
+		      "message": "增加支持#零作为创建标签 #50",
+		      "sha": "01abe0d4187b67d7f088ae59fb3445d5324b34df",
 		      "addition": null,
 		      "deletion": null,
-		      "timestamp": 1399537811469
+		      "timestamp": 1400051503163,
+		      "url": null,
+		      "email": null,
+		      "realname": "易晓峰"
 		    }
 		  ],
 		  "pagination": {
-		    "page_index": 1,
-		    "page_size": 10
+		    "limit": "9999",
+		    "offset": 0,
+		    "count": 2
 		  }
 		}
 
@@ -601,19 +585,66 @@
 
 #Report
 ##查询issue
-查义issue的详细报表
+按时间段，查义issue的详细报表
 
-* URL：`project/:project_id/report/issue`
-* Verb: `GET`
-* Data：
+* URL：`report/issue`
+* Data: 
 
 		{
-			//用户的id
-			"member_id": 1
-			//开始时间
-			"start_time": new Date(),
-			//结束时间
-			"end_time": new Date()
+			"end_time": 1400397728000,
+			"end_time": 1399879328000
 		}
 
-* Returns
+* Verb: `GET`
+* Returns：
+
+返回已经分配(assigned)和未分配(unassigned)两个键值，assigned返回一个数组，包含用户与该用户相关的详细issue。unassigned返回同期无法关联到任何用户的issue。
+
+		{
+		  "assigned": [
+		    {
+		      "member": {
+		        "id": 1,
+		        "username": "conis",
+		        "email": "lishi@gmail.com",
+		        "password": "e10adc3949ba59abbe56e057f20f883e",
+		        "realname": "易晓峰",
+		        "role": "user",
+		        "git": "wvv8oo@gmail.com"
+		      },
+		      "issue": [
+		        {
+		          "id": 1,
+		          "title": "修改后的issue标题",
+		          "content": "详细的描述",
+		          "tag": "需求",
+		          "owner": 1,
+		          "creator": 1,
+		          "status": "new",
+		          "timestamp": 1400032408446,
+		          "finish_time": null,
+		          "project_id": 2,
+		          "plan_finish_time": null,
+		          "project_name": null
+		        }
+		      ]
+		    }
+		    //...
+		  ],
+		  "unassigned": [
+		    {
+		      "id": 4,
+		      "title": "观看记录本地存储跨域名不能共享",
+		      "content": null,
+		      "tag": "bug",
+		      "owner": null,
+		      "creator": 0,
+		      "status": "new",
+		      "timestamp": 1400032641932,
+		      "finish_time": null,
+		      "project_id": 3,
+		      "plan_finish_time": null,
+		      "project_name": "芒果TV"
+		    }
+		  ]
+		}
