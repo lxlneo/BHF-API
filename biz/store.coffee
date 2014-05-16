@@ -9,12 +9,15 @@ _async = require 'async'
 _ = require 'underscore'
 _common = require '../common'
 require 'colors'
+_database = null
 
 exports.database = ->
-  _knex.initialize
+  return _database if _database
+  _database = _knex.initialize
     client: 'sqlite3',
     connection:
       filename: _common.sqlitePath
+
 
 #创建字段
 createField = (table, schema)->
