@@ -78,6 +78,9 @@ class Issue extends _BaseEntity
 
       #在查询之前，对query再处理
       beforeQuery: (query)->
+        #只根据id查一条数据，不做任何条件限制
+
+        return if data.id
         query.limit data.limit || 10
         query.offset data.offset || 0
         #只取未完成的
