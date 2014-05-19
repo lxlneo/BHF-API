@@ -2,7 +2,6 @@
   用于数据存储
 ###
 _knex = require 'knex'
-_config = require '../config'
 _path = require 'path'
 _fs = require 'fs'
 _async = require 'async'
@@ -11,12 +10,10 @@ _common = require '../common'
 require 'colors'
 _database = null
 
+
 exports.database = ->
   return _database if _database
-  _database = _knex.initialize
-    client: 'sqlite3',
-    connection:
-      filename: _common.sqlitePath
+  _database = _knex.initialize _common.config.database
 
 
 #创建字段
@@ -46,13 +43,6 @@ createTable = (schema, callback)->
 
 #建表，创建数据库
 init = ()->
-  #检查数据库是否已经存在，如果存在，则退出
-  console.log "数据库路径：#{_common.sqlitePath}"
-  if _fs.existsSync _common.sqlitePath
-    return console.log "数据库已经已经存在" if process.env.BRANDNEW isnt 'yes'
-    console.log '数据库已经存在，清除现有数据'.red
-    _fs.unlinkSync _common.sqlitePath
-
   #建表
   dir = '../schema'
   #允许的扩展名
