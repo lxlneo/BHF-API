@@ -267,6 +267,32 @@ class Issue extends _BaseEntity
       return _common.response500 res, err if err
       res.end()
 
+  #统计分析单个用户的数据
+  statisticOfMember: (project_id, member_id, cb)->
+    result = {}
+    self = @
+    queue = []
+
+    queue.push(
+      (done)-> self.countIssueOfProject project_id, member_id, (err, count)->
+        result.total = count
+        done err
+    )
+
+    queue.push(
+      (done)-> self.countDelayIssueOfProject project_id, member_id, (err, count)->
+        result.delay = count
+        done err
+    )
+
+    queue.push(
+      (done)-> self.countIssueByStatusOfProject project_id, member_id, 'done', (err, count)->
+        result.done = count
+        done err
+    )
+
+    _async.series queue, (err)-> cb err, result
+
   #获取用户的统计数据
   statisticOfMembers: (project_id, data, cb)->
     self = @
@@ -275,17 +301,21 @@ class Issue extends _BaseEntity
       (-> return index < data.members.length)
       ((done)->
         member = data.members[index++]
-        member_id = member.profile.id
-        member.stat = {}
-        #查询某个用户的issue数量
-        self.countIssueOfProject project_id, member_id, (err, total)->
-          member.stat.total = total
-          self.countDelayIssueOfProject project_id, member_id, (err, delay)->
-            member.stat.delay = delay
-            done err
+        self.statisticOfMember project_id, member.profile.id, (err, stat)->
+          member.stat = stat
+          done err
       )
       cb
     )
+
+  #汇总统计指定project下的issue总数量，不包括status=trash和tag=project的，member可以不指定
+  countIssueByStatusOfProject: (project_id, member_id, status, cb)->
+    sql = "SELECT COUNT(id) FROM issue WHERE tag <> 'project' AND project_id = #{project_id}"
+    status = [status] if typeof status is 'string'
+    sql += " AND status in ('#{status.join('\',\'')}')"
+    sql += " AND owner = #{member_id}" if member_id
+
+    @scalar sql, cb
 
   #汇总统计指定project下的issue总数量，不包括status=trash和tag=project的，member可以不指定
   countIssueOfProject: (project_id, member_id, cb)->
