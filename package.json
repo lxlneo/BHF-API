@@ -6,7 +6,7 @@
     "test": "node-dev ./test/index.coffee"
   },
   "dependencies": {
-    "express": "*",
+    "express": "^3.4.8",
     "coffee-script": "*",
     "sqlite3": "",
     "underscore": "",
