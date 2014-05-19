@@ -6,7 +6,6 @@ _express = require 'express'
 _http = require 'http'
 _app = _express()
 _router = require './router'
-_config = require './config'
 _common = require './common'
 _path = require 'path'
 
@@ -20,21 +19,21 @@ init = ()->
     console.log '警告：当前运行在产品环境下'
 
   #确保文件夹都在
-  _common.dirPromise _path.join(_common.rootPath, _config.uploads)
-  _common.dirPromise _path.join(_common.rootPath, _config.assets)
+  _common.dirPromise _common.config.uploads
+  _common.dirPromise _common.config.assets
 
 _app.configure ()->
   _app.use(_express.methodOverride())
   #_app.use(_express.bodyParser())
   _app.use(_express.bodyParser(
-    uploadDir: _config.uploads
+    uploadDir: _common.config.uploadTemporary
     limit: '200mb'
     keepExtensions: true
   ));
   _app.use(_express.cookieParser())
   _app.use(_express.session(secret: 'hunantv.com', cookie:  maxAge: 1 * 60 * 60 * 1000 ))
   _app.use(_express.static(__dirname + '/static'))
-  _app.set 'port', process.env.PORT || 8000
+  _app.set 'port', process.env.PORT || _common.config.port || 8000
 
 _router(_app)
 

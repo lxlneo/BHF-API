@@ -7,7 +7,6 @@ _schema = require('../schema/asset').schema
 _BaseEntity = require './BaseEntity'
 _fs = require 'fs'
 _commom = require '../common'
-_config = require '../config'
 _uuid = require 'node-uuid'
 _path = require 'path'
 _ = require 'underscore'
@@ -57,15 +56,15 @@ class Asset extends _BaseEntity
 
   #保存素材
   saveAsset: (tempFile, project_id)->
-    target_dir = process.env.ASSETS || _path.join _commom.rootPath, _config.assets, project_id
+    target_dir = process.env.ASSETS || _path.join _commom.rootPath, _commom.config.assets, project_id
     #不在则创建这个文件夹
     _commom.dirPromise target_dir
     #_fs.mkdirSync target_dir if not _fs.existsSync target_dir
 
     filename = _uuid.v4() + _path.extname(tempFile)
-    tmp_path = _path.join _commom.rootPath, _config.uploads, _path.basename(tempFile)
+    tmp_path = _path.join _commom.rootPath, _commom.config.uploadTemporary, _path.basename(tempFile)
     target_path = _path.join target_dir, filename
-    #target_path = _path.join _utility.rootPath, _config.uploads, filename
+    #target_path = _path.join _utility.rootPath, _commom.config.uploads, filename
 
     #从临时文件夹中移动这个文件到新的目录
     _fs.renameSync(tmp_path, target_path) if _fs.existsSync tmp_path

@@ -2,7 +2,7 @@
   路由
 ###
 _ = require 'underscore'
-_config = require './config'
+_router = require './config/router'
 _common = require './common'
 require 'colors'
 _verbs = ["post", "get", "put", "delete"]
@@ -11,6 +11,7 @@ _verbs = ["post", "get", "put", "delete"]
 #获取crud的默认path
 getPaths = (router)->
   paths = {}
+  ROOTAPI = '/api/'
 
   pathPuffix =
     post: ""
@@ -23,9 +24,9 @@ getPaths = (router)->
     #假如在paths中没有取到，则拼装path
     puffix = if router.id is false then '' else pathPuffix[method]
     path = (router.paths && (router.paths[method] || router.paths.all)) ||
-      "#{_config.rootAPI}#{router.path}#{puffix}"
+      "#{ROOTAPI}#{router.path}#{puffix}"
     #替换掉路径中的变量
-    path = path.replace('#{rootAPI}', _config.rootAPI)
+    path = path.replace('#{rootAPI}', ROOTAPI)
     paths[method] = path    #"/api/#{path}"
   paths
 
@@ -122,7 +123,6 @@ module.exports = (app)->
 
   app.get '/doc.html', require('./docs').document
 
-  _config.routers.forEach (router)->
-    apiRouter app, router
+  _router.forEach (router)-> apiRouter app, router
 
   app.get "*", response404

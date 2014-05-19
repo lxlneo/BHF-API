@@ -4,14 +4,25 @@
 _path = require 'path'
 _crypto = require 'crypto'
 _fs = require 'fs'
-_config = require './config'
+_config = require "./config/#{process.env.NODE_ENV || 'development'}"
 
+#获取一个正确的路径，允许相对或者绝对路径
+exports.path = (path)-> _path.join __dirname, _path.relative(__dirname, path)
+
+#处理一下路径
+_config.assets = exports.path _config.assets
+_config.uploads = exports.path _config.uploads
+_config.uploadTemporary = exports.path _config.uploadTemporary
+
+console.log "上传文件路径 -> #{_config.uploads}"
+console.log "上传文件路径 -> #{_config.uploadTemporary}"
+console.log "上传文件路径 -> #{_config.uploads}"
+
+exports.config = _config
 #获取程序的主目录
 exports.rootPath = _path.dirname(require.main.filename)
 #资产的目录
-exports.assetsDir = process.env.ASSETS || _path.join exports.rootPath, _config.assets
-#sqlite3数据库的目录
-exports.sqlitePath = process.env.DBPATH || _path.join exports.rootPath, _config.dbpath
+exports.assetsDir = process.env.ASSETS || _path.join exports.rootPath, exports.config.assets
 
 exports.md5 = (text)->
   md5 = _crypto.createHash('md5')
@@ -54,3 +65,6 @@ exports.checkTag = (tag)->
 #状态只能是这几种
 exports.checkStatus = (status)->
   if status in ['new', 'doing', 'done', 'pause', 'trash'] then status else 'new'
+
+
+

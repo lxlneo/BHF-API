@@ -1,4 +1,5 @@
-_Commit = require '../biz/commit'
+#_Commit = require '../biz/commit'
+_path = require 'path'
 
 testCommit = ()->
   commit = new _Commit(
@@ -21,4 +22,9 @@ testParse = ()->
 
   console.log commit.parse(data)
 
-testParse()
+#testParse()
+
+dir = _path.relative(__dirname, './bhf-api')
+path = _path.join __dirname, dir
+console.log path
+

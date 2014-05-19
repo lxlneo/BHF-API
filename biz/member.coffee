@@ -34,6 +34,7 @@ class Member extends _BaseEntity
 
 
     this.find null, options, (err, result)->
+      console.log(result)
       return _common.response500 res, '糟糕，服务器暴病身亡了' if err
       #没有这个用户名
       return _common.response406 res, errMessage if result.items.length == 0
